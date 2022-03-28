@@ -1,0 +1,14 @@
+note over selain:
+js nappaa lomakkeen lähetyksestä kiinni
+ja lisää syötetyn noten listaan
+ja lähettää xhr:n taustapalvelimelle
+{content: "noten sisältö", date: "2022-03-28T16:08:53.127Z"}
+end note
+
+selain->palvelin: XHR HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa 
+palvelin-->selain: HTTP 201 {"message":"note created"}
+
+note over palvelin:
+spa.js on hoitanut jo noten lisäyksen näkymään
+palvelimelta tulee vain kuittaus että kaikki ok
+end note
