@@ -12,10 +12,19 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-
+  const randomAnecdote = () => {
+    console.log('Random wisdom');
+    const total = anecdotes.length;
+    let nextAnecdote = selected;
+    do {
+      nextAnecdote = Math.floor(Math.random() * total);
+    } while (nextAnecdote === selected); // make sure it actually changes
+    setSelected(nextAnecdote);
+  }
   return (
     <div>
-      {anecdotes[selected]}
+      <p>{anecdotes[selected]}</p>
+      <button onClick={randomAnecdote}>next anecdote</button>
     </div>
   )
 }
