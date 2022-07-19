@@ -1,0 +1,17 @@
+note over selain:
+Selain lähettää form datana note="Kentän arvo"
+end note
+
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+palvelin-->selain: HTTP 302 uudelleenohjaus /exampleapp/notes
+
+
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+
+note over palvelin:
+tarjoilee etusivun missä kirjoitettu "Kentän arvo" näkyvissä
+end note
+
+palvelin-->selain: Notes-lista
+
