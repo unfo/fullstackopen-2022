@@ -12,6 +12,10 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+
+  const startingVotes = Array(anecdotes.length).fill(0);
+  const [votes, setVotes] = useState(startingVotes);
+
   const randomAnecdote = () => {
     console.log('Random wisdom');
     const total = anecdotes.length;
@@ -21,9 +25,17 @@ const App = () => {
     } while (nextAnecdote === selected); // make sure it actually changes
     setSelected(nextAnecdote);
   }
+
+  const vote = () => {
+    const newVotes = [...votes];
+    newVotes[selected] += 1;
+    setVotes(newVotes);
+  }
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <p>{votes[selected]} votes</p>
+      <button onClick={vote}>vote</button>
       <button onClick={randomAnecdote}>next anecdote</button>
     </div>
   )
