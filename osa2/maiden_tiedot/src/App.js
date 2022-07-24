@@ -4,7 +4,7 @@ import axios from 'axios'
 const CountryDetails = ({ country }) => {
   return (
     <>
-      <h1>{country.name.official}</h1>
+      <h1>{country.name.common}</h1>
       <div>
         <dl>
           <dt>Capital</dt>
