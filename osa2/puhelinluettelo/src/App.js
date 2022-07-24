@@ -12,9 +12,14 @@ const App = () => {
   const addName = (event) => {
     console.log('addName', event);
     event.preventDefault();
-    const newPerson = { name: newName };
-    setPersons(persons.concat(newPerson));
-    setNewName('');
+    const names = persons.map((person) => person.name);
+    if (names.includes(newName)) {
+      alert(`[${newName}] is already known.`);
+    } else {
+      const newPerson = { name: newName };
+      setPersons(persons.concat(newPerson));
+      setNewName('');
+    }
   }
   return (
     <div>
