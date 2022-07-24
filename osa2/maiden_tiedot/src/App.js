@@ -28,13 +28,9 @@ const CountryDetails = ({ country }) => {
     </>
   )
 }
-const CountryList = ({ allCountries, countryFilter }) => {
-  const countries = allCountries.filter((country) => {
-    return (
-      countryFilter === '' || 
-      country.name.common.toLowerCase().includes(countryFilter)
-  )});
-
+const CountryList = ({ countries, countryChooser }) => {
+  
+  
   // console.log(countries);
   const len = countries.length;
   if (len === 0) {
@@ -54,7 +50,10 @@ const CountryList = ({ allCountries, countryFilter }) => {
           {countries.map(country => {
             console.log('List item', country);
             return (
-              <li key={country.cca3}>{country.name.common}</li>
+              <li key={country.cca3}>
+                {country.name.common}
+                <button value={country.cca3} onClick={countryChooser}>show</button>
+                </li>
             );
           })}
         </ul>
@@ -67,26 +66,47 @@ const CountryList = ({ allCountries, countryFilter }) => {
 }
 
 function App() {
+  const [allCountries, setAllCountries] = useState([]);
   const [countries, setCountries] = useState([]);
   const [countryFilter, setCountryFilter] = useState('');
   const filterChanged = (event) => {
     setCountryFilter(event.target.value);
+    setCountries(allCountries.filter((country) => {
+      return (
+        countryFilter === '' || 
+        country.name.common.toLowerCase().includes(countryFilter)
+    )}));
   }
   useEffect(() => {
     console.log('effect')
     axios
       .get('https://restcountries.com/v3.1/all')
       .then(response => {
-        setCountries(response.data);
+        setAllCountries(response.data);
       })
   }, []);
+
+  useEffect(() => {
+    setCountries(allCountries.filter((country) => {
+      return (
+        countryFilter === '' || 
+        country.name.common.toLowerCase().includes(countryFilter)
+    )}));
+  }, [allCountries, countryFilter])
+  
+  const countryChooser = (event) => {
+    console.log('countryChooser', event.target.value);
+    const cca3 = event.target.value;
+    setCountries(allCountries.filter((country) => country.cca3 === cca3));
+    console.log(countries);
+  }
   return (
     <>
       <div>
         find countries <input value={countryFilter} onChange={filterChanged} />
       </div>
       <div>
-        <CountryList allCountries={countries} countryFilter={countryFilter} />
+        <CountryList countries={countries} countryChooser={countryChooser} />
       </div>
     </>
   );
