@@ -1,6 +1,35 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+
+const CountryFinder = ({ filter, handler }) => {
+  return (
+    <div>
+      find countries <input value={filter} onChange={handler} />
+    </div>
+  );
+}
+
+const CountryWeather = ({ weather }) => {
+  if ('weather' in weather) {
+    const weather_icon = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
+    const weather_desc = weather.weather[0].description;
+    const temp = weather.main.temp;
+    const feels = weather.main.feels_like;
+    const wind = weather.wind.speed;
+    const place = weather.name;
+
+    return (
+      <>
+        <h2>Weather in {place}</h2>
+        <p>temperature: <strong>{temp} &deg;C</strong> feels like <strong>{feels} &deg;C</strong></p>
+        <p><img alt={weather_desc} src={weather_icon} /></p>
+        <p>wind: <strong>{wind} m/s</strong></p>
+      </>
+    )
+  } 
+}
+
 const CountryDetails = ({ country }) => {
   return (
     <>
@@ -8,7 +37,7 @@ const CountryDetails = ({ country }) => {
       <div>
         <dl>
           <dt>Capital</dt>
-          <dd>{country.capital[0]}</dd>
+          <dd>{country.capital[0]} ({country.latlng.join(',')})</dd>
           <dt>Area</dt>
           <dd>{country.area}</dd>
           <dt>Languages</dt>
@@ -29,9 +58,6 @@ const CountryDetails = ({ country }) => {
   )
 }
 const CountryList = ({ countries, countryChooser }) => {
-  
-  
-  // console.log(countries);
   const len = countries.length;
   if (len === 0) {
     return (<strong>No countries found </strong>);
@@ -44,11 +70,9 @@ const CountryList = ({ countries, countryChooser }) => {
       <strong>Too many countries, filter more ({len})</strong>
     );
   } else if (len > 0 && len < 10) {
-    console.log('country list', countries);
     return (
         <ul>
           {countries.map(country => {
-            console.log('List item', country);
             return (
               <li key={country.cca3}>
                 {country.name.common}
@@ -69,6 +93,7 @@ function App() {
   const [allCountries, setAllCountries] = useState([]);
   const [countries, setCountries] = useState([]);
   const [countryFilter, setCountryFilter] = useState('');
+  const [weatherData, setWeatherData] = useState({});
   const filterChanged = (event) => {
     setCountryFilter(event.target.value);
     setCountries(allCountries.filter((country) => {
@@ -77,8 +102,8 @@ function App() {
         country.name.common.toLowerCase().includes(countryFilter)
     )}));
   }
+  
   useEffect(() => {
-    console.log('effect')
     axios
       .get('https://restcountries.com/v3.1/all')
       .then(response => {
@@ -95,19 +120,30 @@ function App() {
   }, [allCountries, countryFilter])
   
   const countryChooser = (event) => {
-    console.log('countryChooser', event.target.value);
     const cca3 = event.target.value;
     setCountries(allCountries.filter((country) => country.cca3 === cca3));
-    console.log(countries);
   }
+
+  useEffect(() => {
+    const api_key = process.env.REACT_APP_OPENWEATHER_KEY;
+    if (countries.length === 1) {
+      const country = countries[0];
+      const capital = country.capital[0];
+      const cc = country.cca2;
+        axios
+        .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital},${cc}&appid=${api_key}&units=metric`)
+        .then(response => {
+          setWeatherData(response.data);
+        })
+    } else {
+      setWeatherData({});
+    }
+  }, [countries]);
   return (
     <>
-      <div>
-        find countries <input value={countryFilter} onChange={filterChanged} />
-      </div>
-      <div>
-        <CountryList countries={countries} countryChooser={countryChooser} />
-      </div>
+      <CountryFinder filter={countryFilter} handler={filterChanged } />
+      <CountryList countries={countries} countryChooser={countryChooser} />
+      <CountryWeather weather={weatherData} />
     </>
   );
 }
