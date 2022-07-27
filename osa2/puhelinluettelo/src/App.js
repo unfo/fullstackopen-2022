@@ -35,14 +35,17 @@ const PersonForm = ({ submitHandler, name, nameHandler, number, numberHandler })
   )
 }
 
-const FilteredPersonList = ({ persons, filter }) => {
+const FilteredPersonList = ({ persons, filter, deleteHook }) => {
   const filteredPersons = persons.filter((person) => {
     return (filter === '' || person.name.toLowerCase().includes(filter))
   });
   return (
     <ul>
     {filteredPersons.map(person => 
-      <li key={person.name}>{person.name} - {person.number}</li>
+      <li key={person.name}>
+        {person.name} - {person.number}
+        <button onClick={() => deleteHook(person.id)}>delete</button>
+      </li>
     )}
     </ul>
   );
@@ -91,6 +94,19 @@ const App = () => {
         })
     }
   }
+
+  const handleDeletePerson = (id) => {
+    const person = persons.find(person => person.id === id);
+    console.log('Remove person> ', person);
+    if (window.confirm(`Excommunicate ${person.name} effective immediately?`)) {
+      personService.remove(person.id)
+        .then(response => {
+          setPersons(persons.filter(p => p.id !== person.id));
+        }).catch(response => {
+          window.alert(`Unable to remove ${person}`);
+        });
+    }
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -104,7 +120,7 @@ const App = () => {
         numberHandler={handleNumberChange}
         />
       <h2>Numbers</h2>
-      <FilteredPersonList persons={persons} filter={nameFilter} />
+      <FilteredPersonList persons={persons} filter={nameFilter} deleteHook={handleDeletePerson} />
     </div>
   )
 
