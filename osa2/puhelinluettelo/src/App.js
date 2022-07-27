@@ -77,9 +77,23 @@ const App = () => {
   const addName = (event) => {
     console.log('addName', event);
     event.preventDefault();
-    const names = persons.map((person) => person.name);
-    if (names.includes(newName)) {
-      alert(`[${newName}] is already known.`);
+    const existingPerson = persons.find(person => person.name === newName);
+    if (existingPerson !== undefined) {  
+      if (window.confirm(`[${existingPerson.name}] already found. Update number?`)) {
+        personService.update(existingPerson.id, {...existingPerson, number: newNumber})
+          .then(savedPerson => {
+            setPersons(persons.map(person => {
+             return person.id === existingPerson.id
+                ? savedPerson
+                : person;
+            }))
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(response => {
+            window.alert(`Unable to update number for [${existingPerson.name}]`)
+          })
+      }
     } else {
       const newPerson = { 
         name: newName,
