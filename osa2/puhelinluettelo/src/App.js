@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Notification from './components/Notification';
 
 const NameFilter = ({ filter, handler }) => {
   return (
@@ -50,6 +51,7 @@ const FilteredPersonList = ({ persons, filter, deleteHook }) => {
     </ul>
   );
 }
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
@@ -86,12 +88,13 @@ const App = () => {
              return person.id === existingPerson.id
                 ? savedPerson
                 : person;
-            }))
+            }));
+            showNotification(`[${savedPerson.name}] successfully updated`, 'success');
             setNewName('');
             setNewNumber('');
           })
           .catch(response => {
-            window.alert(`Unable to update number for [${existingPerson.name}]`)
+            showNotification(`Failed to save [${existingPerson.name}]`, 'fail');
           })
       }
     } else {
@@ -102,6 +105,7 @@ const App = () => {
       personService.create(newPerson)
         .then(savedPerson => {
           console.log('Saved> ', savedPerson);
+          showNotification(`[${savedPerson.name}] successfully saved`, 'success');
           setPersons(persons.concat(savedPerson));
           setNewName('');
           setNewNumber('');
@@ -116,14 +120,35 @@ const App = () => {
       personService.remove(person.id)
         .then(response => {
           setPersons(persons.filter(p => p.id !== person.id));
+          showNotification(`[${person.name}] successfully removed`, 'success');
         }).catch(response => {
-          window.alert(`Unable to remove ${person}`);
+          // window.alert(`Unable to remove ${person}`);
+          showNotification(`[${person.name}] failed to leave`, 'fail');
         });
     }
   }
+  const emptyNotification = {
+    message: null,
+    messageType: null
+  };
+  const [notification, setNotification] = useState(emptyNotification);
+
+  
+  const showNotification = (message, type) => {
+    console.log('showNotification: ', message, type);
+    setNotification({
+      message: message,
+      messageType: type
+    });
+    setTimeout(() => {
+      setNotification(emptyNotification);
+    }, 5000)
+  }
+ 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} messageType={notification.messageType} />
       <NameFilter filter={nameFilter} handler={handleFilterChange} />
       <h3>add new</h3>
       <PersonForm 
