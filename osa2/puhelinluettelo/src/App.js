@@ -94,7 +94,7 @@ const App = () => {
             setNewNumber('');
           })
           .catch(response => {
-            showNotification(`Failed to save [${existingPerson.name}]`, 'fail');
+            showNotification(`Failed to update [${existingPerson.name}]`, 'fail');
           })
       }
     } else {
@@ -123,6 +123,7 @@ const App = () => {
           showNotification(`[${person.name}] successfully removed`, 'success');
         }).catch(response => {
           // window.alert(`Unable to remove ${person}`);
+          console.log(response);
           showNotification(`[${person.name}] failed to leave`, 'fail');
         });
     }
