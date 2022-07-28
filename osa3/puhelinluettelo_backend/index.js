@@ -2,8 +2,10 @@ const { response } = require('express');
 const express = require('express');
 const app = express();
 
-app.use(express.json());
+const morgan = require('morgan');
 
+app.use(express.json());
+app.use(morgan('tiny'));
 
 let persons = [
   { 
@@ -60,8 +62,6 @@ const generateId = () => {
   return newId;
 }
 app.post('/api/persons', (request, response) => {
-  console.log(request.params);
-  console.log(request.body);
   const body = request.body;
   if (!body.name || !body.number) {
     return response.status(400).json({
