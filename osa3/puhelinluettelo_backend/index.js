@@ -62,13 +62,6 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end();
 })
 
-const generateId = () => {
-  let newId;
-  do {
-    newId = Math.floor(Math.random() * 10000); // UUID plz
-  } while (persons.find(p => p.id === newId));
-  return newId;
-}
 app.post('/api/persons', (request, response) => {
   const body = request.body;
   if (!body.name || !body.number) {
@@ -77,19 +70,19 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return response.status(400).json({
-      error: `[${body.name}] already exists. please update instead.`
-    })
-  }
+  // if (persons.find(p => p.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: `[${body.name}] already exists. please update instead.`
+  //   })
+  // }
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId()
-  }
-  persons = persons.concat(person);
-  response.json(person);
+  });
+  person.save().then(savedPerson => {
+    response.json(savedPerson);
+  })
 })
 
 app.get('/info', (request, response) => {
