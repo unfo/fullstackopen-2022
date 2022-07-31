@@ -57,9 +57,10 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter(p => p.id !== id)
-  response.status(204).end();
+  Person.findByIdAndRemove(request.params.id)
+  .then(result => {
+    response.status(204).end();
+  })
 })
 
 app.post('/api/persons', (request, response) => {
@@ -69,12 +70,6 @@ app.post('/api/persons', (request, response) => {
       error: 'name and number are required'
     })
   }
-
-  // if (persons.find(p => p.name === body.name)) {
-  //   return response.status(400).json({
-  //     error: `[${body.name}] already exists. please update instead.`
-  //   })
-  // }
 
   const person = new Person({
     name: body.name,
