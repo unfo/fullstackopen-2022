@@ -74,7 +74,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     }).catch(error => next(error));
 })
 
-
+// comment for commit
 app.get('/info', (request, response, next) => {
   Person.find({}).then(people => {
     const now = new Date();
