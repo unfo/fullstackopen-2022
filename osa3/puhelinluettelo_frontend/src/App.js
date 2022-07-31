@@ -106,6 +106,9 @@ const App = () => {
           setPersons(persons.concat(savedPerson));
           setNewName('');
           setNewNumber('');
+        }).catch(error => {
+          // console.log(error);
+          showNotification(error.response.data.error, 'fail');
         })
     }
   }
@@ -134,13 +137,17 @@ const App = () => {
   
   const showNotification = (message, type) => {
     console.log('showNotification: ', message, type);
+    const timeoutLengths = {
+      'success': 5000,
+      'fail': 15000
+    }
     setNotification({
       message: message,
       messageType: type
     });
     setTimeout(() => {
       setNotification(emptyNotification);
-    }, 5000)
+    }, timeoutLengths[type]);
   }
  
   return (
