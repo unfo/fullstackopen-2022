@@ -55,7 +55,6 @@ const FilteredPersonList = ({ persons, filter, deleteHook }) => {
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
-    console.log('effect')
     personService
       .getAll()
       .then(persons => setPersons(persons))
@@ -68,12 +67,10 @@ const App = () => {
 
   const [newName, setNewName] = useState('');
   const handleNameChange = (event) => {
-    console.log('handleNameChange', event.target.value);
     setNewName(event.target.value);
   }
   const [newNumber, setNewNumber] = useState('');
   const handleNumberChange = (event) => {
-    console.log('handleNumberChange', event.target.value);
     setNewNumber(event.target.value);
   }
   const addName = (event) => {
