@@ -1,88 +1,88 @@
-import { useState, useEffect } from 'react'
-import personService from './services/persons'
+import { useState, useEffect } from 'react';
+import personService from './services/persons';
 import Notification from './components/Notification';
 
 const NameFilter = ({ filter, handler }) => {
   return (
     <div>
-    filter numbers: 
-    <input value={filter} onChange={handler} />
-  </div>
-  )
-}
+    filter numbers:
+      <input value={filter} onChange={handler} />
+    </div>
+  );
+};
 
 const PersonForm = ({ submitHandler, name, nameHandler, number, numberHandler }) => {
 
   return (
     <form onSubmit={submitHandler}>
-        <div>
-          name: 
-          <input
-            value={name}
-            onChange={nameHandler}
-          />
-        </div>
-        <div>
-          number: 
-          <input
-            value={number}
-            onChange={numberHandler}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-  )
-}
+      <div>
+          name:
+        <input
+          value={name}
+          onChange={nameHandler}
+        />
+      </div>
+      <div>
+          number:
+        <input
+          value={number}
+          onChange={numberHandler}
+        />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
 
 const FilteredPersonList = ({ persons, filter, deleteHook }) => {
   const filteredPersons = persons.filter((person) => {
-    return (filter === '' || person.name.toLowerCase().includes(filter))
+    return (filter === '' || person.name.toLowerCase().includes(filter));
   });
   return (
     <ul>
-    {filteredPersons.map(person => 
-      <li key={person.name}>
-        {person.name} - {person.number}
-        <button onClick={() => deleteHook(person.id)}>delete</button>
-      </li>
-    )}
+      {filteredPersons.map(person =>
+        <li key={person.name}>
+          {person.name} - {person.number}
+          <button onClick={() => deleteHook(person.id)}>delete</button>
+        </li>
+      )}
     </ul>
   );
-}
+};
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
     personService
       .getAll()
-      .then(persons => setPersons(persons))
-  }, [])
+      .then(persons => setPersons(persons));
+  }, []);
 
   const [nameFilter, setNameFilter] = useState('');
   const handleFilterChange = (event) => {
     setNameFilter(event.target.value);
-  }
+  };
 
   const [newName, setNewName] = useState('');
   const handleNameChange = (event) => {
     setNewName(event.target.value);
-  }
+  };
   const [newNumber, setNewNumber] = useState('');
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
-  }
+  };
   const addName = (event) => {
     console.log('addName', event);
     event.preventDefault();
     const existingPerson = persons.find(person => person.name === newName);
-    if (existingPerson !== undefined) {  
+    if (existingPerson !== undefined) {
       if (window.confirm(`[${existingPerson.name}] already found. Update number?`)) {
-        personService.update(existingPerson.id, {...existingPerson, number: newNumber})
+        personService.update(existingPerson.id, { ...existingPerson, number: newNumber })
           .then(savedPerson => {
             setPersons(persons.map(person => {
-             return person.id === existingPerson.id
+              return person.id === existingPerson.id
                 ? savedPerson
                 : person;
             }));
@@ -90,12 +90,12 @@ const App = () => {
             setNewName('');
             setNewNumber('');
           })
-          .catch(response => {
-            showNotification(`Failed to update [${existingPerson.name}]`, 'fail');
-          })
+          .catch(error => {
+            showNotification(`Failed to update [${existingPerson.name}]. ${error.response.data.error}`, 'fail');
+          });
       }
     } else {
-      const newPerson = { 
+      const newPerson = {
         name: newName,
         number: newNumber
       };
@@ -109,38 +109,38 @@ const App = () => {
         }).catch(error => {
           // console.log(error);
           showNotification(error.response.data.error, 'fail');
-        })
+        });
     }
-  }
+  };
 
   const handleDeletePerson = (id) => {
     const person = persons.find(person => person.id === id);
     console.log('Remove person> ', person);
     if (window.confirm(`Excommunicate ${person.name} effective immediately?`)) {
       personService.remove(person.id)
-        .then(response => {
+        .then(() => {
           setPersons(persons.filter(p => p.id !== person.id));
           showNotification(`[${person.name}] successfully removed`, 'success');
-        }).catch(response => {
+        }).catch(error => {
           // window.alert(`Unable to remove ${person}`);
-          console.log(response);
-          showNotification(`[${person.name}] failed to leave`, 'fail');
+          console.log(error);
+          showNotification(`[${person.name}] failed to leave. ${error.response.data.error}`, 'fail');
         });
     }
-  }
+  };
   const emptyNotification = {
     message: null,
     messageType: null
   };
   const [notification, setNotification] = useState(emptyNotification);
 
-  
+
   const showNotification = (message, type) => {
     console.log('showNotification: ', message, type);
     const timeoutLengths = {
       'success': 5000,
       'fail': 15000
-    }
+    };
     setNotification({
       message: message,
       messageType: type
@@ -148,26 +148,26 @@ const App = () => {
     setTimeout(() => {
       setNotification(emptyNotification);
     }, timeoutLengths[type]);
-  }
- 
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Notification message={notification.message} messageType={notification.messageType} />
       <NameFilter filter={nameFilter} handler={handleFilterChange} />
       <h3>add new</h3>
-      <PersonForm 
-        submitHandler={addName} 
+      <PersonForm
+        submitHandler={addName}
         name={newName}
         nameHandler={handleNameChange}
         number={newNumber}
         numberHandler={handleNumberChange}
-        />
+      />
       <h2>Numbers</h2>
       <FilteredPersonList persons={persons} filter={nameFilter} deleteHook={handleDeletePerson} />
     </div>
-  )
+  );
 
-}
+};
 
-export default App
+export default App;
