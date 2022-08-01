@@ -9,7 +9,17 @@ const totalLikes = (blogs) => {
     .reduce((total, current) => total + current, 0);
 };
 
+const favoriteBlog = (blogs) => {
+  return blogs
+    .map(blog => {
+      return { 'title': blog.title, 'author': blog.author, 'likes': blog.likes };
+    }).sort((a, b) => {
+      return (b.likes - a.likes);
+    })[0];
+};
+
 module.exports = {
   dummy,
   totalLikes,
+  favoriteBlog,
 };

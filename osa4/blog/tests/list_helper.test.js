@@ -54,6 +54,14 @@ const blogs = [
     url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
     likes: 2,
     __v: 0
+  },
+  {
+    _id: '62e77f29eb95383200055b20',
+    title: 'Pachabel Canonical in String Major',
+    author: 'Johann Pachabel',
+    url: 'https://en.wikipedia.org/wiki/Pachelbel%27s_Canon',
+    likes: 12,
+    __v: 0
   }
 ];
 
@@ -69,6 +77,29 @@ describe('total likes', () => {
   });
   test('of a bigger list is calculated correctly', () => {
     const result = listHelper.totalLikes(blogs);
-    expect(result).toBe(36);
+    expect(result).toBe(48);
+  });
+});
+
+describe('favorite blog', () => {
+  test('empty list has no favorites', () => {
+    const result = listHelper.favoriteBlog([]);
+    expect(result).toBeUndefined();
+  });
+  const aFewGoodBlogs = blogs.slice(0,-1);
+  test('can sort unambiguous blogs', () => {
+    const result = listHelper.favoriteBlog(aFewGoodBlogs);
+    const dijkstra = { ...blogs[2] };
+    delete dijkstra.__v;
+    delete dijkstra._id;
+    delete dijkstra.url;
+    expect(result).toEqual(dijkstra);
+  });
+  test('can choose a favorite from equals', () => {
+    const result = listHelper.favoriteBlog(aFewGoodBlogs);
+    const bestTitles = [blogs[2].title, blogs[6].title];
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('title');
+    expect(bestTitles).toContain(result.title);
   });
 });
