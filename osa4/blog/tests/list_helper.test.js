@@ -115,3 +115,15 @@ describe('most blogs written', () => {
     expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 });
   });
 });
+
+describe('most liked author', () => {
+  test('no blogs means no likes', () => {
+    const result = listHelper.mostLikes([]);
+    expect(result).toBeUndefined();
+  });
+  test('works on a list of blogs', () => {
+    const result = listHelper.mostLikes(blogs);
+    expect(result).toBeDefined();
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 });
+  });
+});

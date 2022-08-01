@@ -25,38 +25,33 @@ const mostBlogs = (blogs) => {
     return;
   }
 
-  /* native JS
-  const authorBlogCounts = blogs
-    .map(blog => blog.author)
-    .reduce((blogCounts, author) => {
-      blogCounts[author] = blogCounts[author] || 0;
-      blogCounts[author] += 1;
-      return blogCounts;
-    }, {});
-
-  const mostProlific = Object.entries(authorBlogCounts)
-    .map(entry => {
-      const [author, blogCount] = entry;
-      return { 'author': author, 'blogs': blogCount };
-    })
-    .sort((a, b) => b.blogs - a.blogs);
-  */
-  // lodash version
-  // unsure if better
+  // found better lodash way
   const mostBlogsByAuthor = _(blogs)
-    .chain()
     .countBy('author')
-    .toPairs()
-    .map(pair => { return { 'author': pair[0], 'blogs': pair[1] }; })
-    .sortBy(['blogs'])
-    .last() // sorted ASC => last is biggest
-    .value();
+    .map((blogs, author) => ({ author, blogs }))
+    .sortBy('blogs')
+    .last(); // sorted ASC => last is biggest
   return mostBlogsByAuthor;
+};
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return;
+  }
+  return _(blogs)
+    .groupBy('author')
+    .map((blogByAuthor, author) => ({
+      author: author,
+      likes: _.sumBy(blogByAuthor, 'likes')
+    }))
+    .sortBy('likes')
+    .last();
 };
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 };
