@@ -103,3 +103,15 @@ describe('favorite blog', () => {
     expect(bestTitles).toContain(result.title);
   });
 });
+
+describe('most blogs written', () => {
+  test('no blogs means no authors', () => {
+    const result = listHelper.mostBlogs([]);
+    expect(result).toBeUndefined();
+  });
+  test('works on a list of blogs', () => {
+    const result = listHelper.mostBlogs(blogs);
+    expect(result).toBeDefined();
+    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 });
+  });
+});
