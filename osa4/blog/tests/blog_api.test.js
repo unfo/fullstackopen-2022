@@ -6,6 +6,7 @@ const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.initialBlogs);
@@ -38,6 +39,24 @@ describe('4.9*: blogilistan testit, step2', () => {
   });
 });
 
+describe('4.10: blogilistan testit, step3', () => {
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+      author: 'Robert Hobart Davis',
+      url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
+      likes: 0
+    };
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+    const blogs = await helper.blogsInDb();
+    expect(blogs.length).toBe(helper.initialBlogs.length + 1);
+    const titles = blogs.map(blog => blog.title);
+    expect(titles).toContain(newBlog.title);
+  });
+});
 
 afterAll(() => {
   mongoose.connection.close();
