@@ -6,7 +6,6 @@ const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 
-
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.initialBlogs);
@@ -106,7 +105,7 @@ describe('4.12*: blogilistan testit, step5', () => {
 });
 
 describe('4.13 blogilistan laajennus, step1', () => {
-  test('a single existing note can be deleted', async () => {
+  test('a single existing blog can be deleted', async () => {
     const before = await helper.blogsInDb();
     const target = before[0].id;
     await api
@@ -122,6 +121,39 @@ describe('4.13 blogilistan laajennus, step1', () => {
     await api
       .delete(`/api/blogs/${target}`)
       .expect(204);
+  });
+});
+
+describe('4.14* blogilistan laajennus, step2', () => {
+  test('a blog entry can be updated', async () => {
+    const before = await helper.blogsInDb();
+    const blog = { ...before[0] };
+    blog.likes += 100;
+    const result = await api
+      .put(`/api/blogs/${blog.id}`)
+      .send(blog)
+      .expect(200);
+    const updatedBlog = result.body;
+    expect(updatedBlog).toEqual(blog);
+  });
+  test('trying to update non-existent id is 404', async () => {
+    const id = await helper.nonExistingId();
+    const emptyBlog = {};
+    await api
+      .put(`/api/blogs/${id}`)
+      .send(emptyBlog)
+      .expect(404);
+    const blogs = await helper.blogsInDb();
+    console.log('Blogs in DB: ', blogs);
+  });
+
+  test('trying to update malformed id is 400', async () => {
+    const id = 'foobar';
+    const emptyBlog = {};
+    await api
+      .put(`/api/blogs/${id}`)
+      .send(emptyBlog)
+      .expect(400);
   });
 });
 
