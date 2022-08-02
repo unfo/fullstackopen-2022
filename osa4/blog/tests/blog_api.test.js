@@ -57,7 +57,20 @@ describe('4.10: blogilistan testit, step3', () => {
     expect(titles).toContain(newBlog.title);
   });
 });
-
+describe('4.11*: blogilistan testit, step4', () => {
+  test('default value for likes is set as 0', async () => {
+    const newBlog = {
+      title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+      author: 'Robert Hobart Davis',
+      url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
+    };
+    const response = await api.post('/api/blogs').send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+    const savedBlog = response.body;
+    expect(savedBlog.likes).toBe(0);
+  });
+});
 afterAll(() => {
   mongoose.connection.close();
 });
