@@ -71,6 +71,40 @@ describe('4.11*: blogilistan testit, step4', () => {
     expect(savedBlog.likes).toBe(0);
   });
 });
+
+describe('4.12*: blogilistan testit, step5', () => {
+  const newBlog = {
+    title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+    author: 'Robert Hobart Davis',
+    url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
+  };
+  test('title is required', async () => {
+    const missingTitle = { ...newBlog };
+    delete missingTitle.title;
+
+    await api
+      .post('/api/blogs')
+      .send(missingTitle)
+      .expect(400);
+
+    const blogs = await helper.blogsInDb();
+    expect(blogs.length).toBe(helper.initialBlogs.length);
+  });
+  test('url is required', async () => {
+    const missingUrl = { ...newBlog };
+    delete missingUrl.url;
+
+    await api
+      .post('/api/blogs')
+      .send(missingUrl)
+      .expect(400);
+
+    const blogs = await helper.blogsInDb();
+    expect(blogs.length).toBe(helper.initialBlogs.length);
+  });
+
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
