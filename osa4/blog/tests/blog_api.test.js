@@ -105,6 +105,26 @@ describe('4.12*: blogilistan testit, step5', () => {
 
 });
 
+describe('4.13 blogilistan laajennus, step1', () => {
+  test('a single existing note can be deleted', async () => {
+    const before = await helper.blogsInDb();
+    const target = before[0].id;
+    await api
+      .delete(`/api/blogs/${target}`)
+      .expect(204);
+    const after = await helper.blogsInDb();
+    expect(after.length).toBe(before.length - 1);
+    const ids = after.map(blog => blog.id);
+    expect(ids).not.toContain(target);
+  });
+  test('deletion is idempotent so non-existing ids do not cause errors', async () => {
+    const target = await helper.nonExistingId();
+    await api
+      .delete(`/api/blogs/${target}`)
+      .expect(204);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
