@@ -20,7 +20,7 @@ const tokenExtractor = (request, _, next) => {
 
 const userExtractor = async (request, response, next) => {
   if (request.token) {
-    const token = jwt.verify(request.token, process.env.SECRET);
+    const token = jwt.verify(request.token, process.env.SECRET, { algorithms: ['HS256'] });
     const user = await User.findById(token.id);
     if (!user) {
       return response.status(401).json({ error: 'invalid user id' });
