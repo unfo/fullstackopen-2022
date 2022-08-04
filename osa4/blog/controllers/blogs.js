@@ -3,28 +3,14 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-const getBearerToken = request => {
-  const authHeader = request.get('authorization');
-  if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
-    return authHeader.slice(7);
-  }
-  return null;
-};
-
-const getVerifiedToken = (request) => {
-  const token = getBearerToken(request);
-  const decoded = jwt.verify(token, process.env.SECRET);
-  return decoded;
-};
-
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
 blogRouter.post('/', async (request, response) => {
-  const bearer = getVerifiedToken(request);
-  const user = await User.findById(bearer.id);
+  const token = jwt.verify(request.token, process.env.SECRET);
+  const user = await User.findById(token.id);
   if (!user) {
     return response.status(401).json({ error: 'invalid user id' });
   }
