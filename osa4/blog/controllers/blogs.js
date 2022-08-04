@@ -1,24 +1,38 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
-blogRouter.get('/', async (_, response) => {
+const getBearerToken = request => {
+  const authHeader = request.get('authorization');
+  if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+    return authHeader.slice(7);
+  }
+  return null;
+};
+
+const getVerifiedToken = (request) => {
+  const token = getBearerToken(request);
+  const decoded = jwt.verify(token, process.env.SECRET);
+  return decoded;
+};
+
+blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
 blogRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body);
-  const author = await User.findOne({});
-  if (!author) {
-    return response.status(400).json({
-      error: 'Please add users first'
-    });
+  const bearer = getVerifiedToken(request);
+  const user = await User.findById(bearer.id);
+  if (!user) {
+    return response.status(401).json({ error: 'invalid user id' });
   }
-  blog.user = author.id;
+  const blog = new Blog(request.body);
+  blog.user = user.id;
   const savedBlog = await blog.save();
-  author.blogs = author.blogs.concat(savedBlog._id);
-  await author.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
   response.status(201).json(savedBlog);
 });
 
