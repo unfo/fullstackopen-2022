@@ -1,14 +1,40 @@
 const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
 const User = require('../models/user');
+const logger = require('../utils/logger');
 
 usersRouter.get('/', async (_, response) => {
   const users = await User.find({});
   response.json(users);
 });
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body;
+  const knownUser = await User.findOne({ username });
+  let error;
+  if (knownUser) {
+    error = {
+      name: 'ValidationError',
+      param: 'username',
+      message: 'username must be unique',
+      value: username
+    };
+    // send to centralized middleware error handling
+    return next(error);
+  }
+  if (password.length <= 3) {
+    error = {
+      name: 'ValidationError',
+      param: 'password',
+      message: 'password minimum length is 3',
+      // value: password
+    };
+    if (error) {
+      logger.error('We have an error', error);
+      // send to centralized middleware error handling
+      return next(error);
+    }
+  }
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
