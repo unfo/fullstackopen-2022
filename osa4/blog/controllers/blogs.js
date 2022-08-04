@@ -11,6 +11,9 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const user = request.user;
+  if (!user) {
+    return response.status(401).end();
+  }
   const blog = new Blog(request.body);
   blog.user = user.id;
   const savedBlog = await blog.save();
@@ -21,6 +24,9 @@ blogRouter.post('/', async (request, response) => {
 
 blogRouter.delete('/:id', async (request, response) => {
   const user = request.user;
+  if (!user) {
+    return response.status(401).end();
+  }
   const blog = await Blog.findById(request.params.id);
   if (blog) {
     if (blog.user.toString() !== user.id.toString()) {

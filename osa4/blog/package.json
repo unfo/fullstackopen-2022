@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_DEV=development nodemon index.js",
-    "test": "NODE_DEV=test jest --verbose --runInBand --forceExit",
+    "test": "NODE_DEV=test jest --runInBand --forceExit",
     "test:api": "NODE_DEV=test jest --verbose --runInBand --forceExit -- tests/blog_api.test.js",
     "test:watch": "NODE_DEV=test jest --watchAll --verbose --runInBand --forceExit",
     "lint": "eslint ."
