@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
   const [status, setStatus] = useState('closed');
   const icons = {
     closed: '▶️',
@@ -10,12 +10,19 @@ const Blog = ({ blog }) => {
     event.preventDefault();
     setStatus(status === 'open' ? 'closed' : 'open');
   };
+  const like = (event) => {
+    event.preventDefault();
+    const likedBlog = { ...blog };
+    likedBlog.likes += 1;
+    likeBlog(likedBlog);
+  };
+
   const blogDetails = () => {
     return (
       <>
         <button onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title}</button>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button>like</button></p>
+        <p>{blog.likes} <button onClick={like}>like</button></p>
         <p>{blog.author}</p>
       </>
     );
