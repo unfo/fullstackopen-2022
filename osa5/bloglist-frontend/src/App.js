@@ -35,7 +35,6 @@ const App = () => {
   const [notification, setNotification] = useState(emptyNotification);
 
   const showNotification = (message, type) => {
-    console.log('showNotification: ', message, type);
     const timeoutLengths = {
       'success': 3000,
       'fail': 5000
@@ -71,7 +70,6 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log('logging in with', username, password);
     try {
       const user = await loginService.login({ username, password, });
       window.localStorage.setItem('user', JSON.stringify(user));
