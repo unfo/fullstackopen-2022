@@ -1,6 +1,6 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
-
+const logger = require('../utils/logger');
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -23,20 +23,28 @@ blogRouter.post('/', async (request, response) => {
 });
 
 blogRouter.delete('/:id', async (request, response) => {
+  logger.info(`delete ${request.params.id}`);
   const user = request.user;
   if (!user) {
+    logger.error('No user present');
     return response.status(401).end();
   }
+  logger.info(`Logged in as ${user.username}`);
   const blog = await Blog.findById(request.params.id);
   if (blog) {
+    logger.info(`Found blog: ${blog.title} with id`);
     if (blog.user.toString() !== user.id.toString()) {
+      logger.error(`[${blog.title}] not owned by ${user.username}`);
+      logger.error(`[${blog.user.toString()}] !== [${user.id.toString()}]`);
       return response.status(401).json({
         error: 'Permission denied. Can only delete own blog posts.'
       });
     }
     await blog.remove();
+    logger.info('Deleted blog from db');
     user.blogs = user.blogs.filter(blog => blog.id !== request.params.id);
     await user.save();
+    logger.info('Removed reference to blog from user');
   }
   response.status(204).end();
 });

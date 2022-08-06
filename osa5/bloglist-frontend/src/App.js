@@ -55,6 +55,7 @@ const App = () => {
     if (localStorageUser) {
       const user = JSON.parse(localStorageUser);
       setUser(user);
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -101,6 +102,12 @@ const App = () => {
 
   const likeBlog = async (blog) => {
     await blogService.update(blog.id, blog);
+    const updatedBloglist = await blogService.getAll();
+    setBlogs(updatedBloglist);
+  };
+
+  const removeBlog = async (id) => {
+    await blogService.remove(id);
     const updatedBloglist = await blogService.getAll();
     setBlogs(updatedBloglist);
   };
@@ -152,7 +159,12 @@ const App = () => {
         </Togglable>
         {
           blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              removeBlog={removeBlog}
+              currentUser={user} />
           )
         }
       </div>
