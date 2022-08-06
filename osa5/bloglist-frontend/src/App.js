@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
+import { Blog, BlogForm } from './components/Blog';
 
 const LoginDetails = ({ user, onLogout }) => {
   return (
@@ -16,6 +16,11 @@ const LoginDetails = ({ user, onLogout }) => {
 const App = () => {
   // blogs
   const [blogs, setBlogs] = useState([]);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  //BlogForm
 
   // login
   const [username, setUsername] = useState('');
@@ -28,7 +33,6 @@ const App = () => {
     messageType: null
   };
   const [notification, setNotification] = useState(emptyNotification);
-
 
   const showNotification = (message, type) => {
     console.log('showNotification: ', message, type);
@@ -70,6 +74,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password, });
       window.localStorage.setItem('user', JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
@@ -82,8 +87,21 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     window.localStorage.removeItem('user');
+    blogService.setToken(null);
     setUser(null);
     showNotification('logged out', 'success');
+  };
+
+  const addBlog = async (event) => {
+    event.preventDefault();
+    const newBlog = {
+      title, author, url
+    };
+    const savedBlog = await blogService.create(newBlog);
+    setBlogs(blogs.concat(savedBlog));
+    setAuthor('');
+    setTitle('');
+    setUrl('');
   };
 
   const loginForm = () => {
@@ -128,6 +146,16 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={notification.message} messageType={notification.messageType} />
         <LoginDetails user={user} onLogout={handleLogout} />
+        <BlogForm
+          title={title}
+          titleChanged={({ target }) => { setTitle(target.value); }}
+          author={author}
+          authorChanged={({ target }) => { setAuthor(target.value); }}
+          url={url}
+          urlChanged={({ target }) => { setUrl(target.value); }}
+          onSubmit={addBlog}
+        />
+
         {
           blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
