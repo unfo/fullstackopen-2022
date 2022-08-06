@@ -2,6 +2,10 @@ div, table, form {
   margin: 10px 0 10px 0;
 }
 
+div.blog {
+  border: 1px solid black;
+}
+
 /* Notifications */
 output {
   float: none;
