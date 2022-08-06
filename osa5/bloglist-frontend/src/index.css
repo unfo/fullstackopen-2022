@@ -1,13 +1,22 @@
-.success {
-  border: 3px solid green;
-  padding: 10px;
-}
-
-.fail {
-  border: 3px solid red;
-  padding: 10px;
-}
-
 div, table, form {
   margin: 10px 0 10px 0;
 }
+
+/* Notifications */
+output {
+  float: none;
+  margin: 20px;
+  padding: 10px;
+  border-width: 3px;
+  border-style: solid;
+}
+output.success {
+  border-color: green;
+  color: darkgreen;
+}
+
+output.fail {
+  border-color: red;
+  color: darkred;
+}
+

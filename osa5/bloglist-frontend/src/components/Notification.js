@@ -3,9 +3,9 @@ const Notification = ({ message, messageType }) => {
     return null;
   } else {
     return (
-      <div className={messageType}>
+      <output className={messageType}>
         {messageType}: {message}
-      </div>
+      </output>
     );
   }
 };

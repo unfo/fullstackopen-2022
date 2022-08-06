@@ -102,6 +102,7 @@ const App = () => {
     setAuthor('');
     setTitle('');
     setUrl('');
+    showNotification(`New blog added [${savedBlog.title}] by [${savedBlog.author}]`, 'success');
   };
 
   const loginForm = () => {
