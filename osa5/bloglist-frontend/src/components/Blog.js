@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
   const loggedIn = currentUser !== null;
-  const isOwnBlog = loggedIn ? blog.user.username === currentUser.username : false;
+  const isOwnBlog = loggedIn ? blog.user.username === currentUser : false;
   const [status, setStatus] = useState('closed');
   const icons = {
     closed: '▶️',
@@ -50,6 +51,13 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
       {status === 'open' ? blogDetails() : blogSummary() }
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  likeBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  currentUser: PropTypes.string,
 };
 
 export default Blog;

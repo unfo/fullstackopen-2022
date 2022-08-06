@@ -164,7 +164,7 @@ const App = () => {
               blog={blog}
               likeBlog={likeBlog}
               removeBlog={removeBlog}
-              currentUser={user} />
+              currentUser={user ? user.username : null} />
           )
         }
       </div>
