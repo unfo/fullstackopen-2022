@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
-  const loggedIn = currentUser !== null;
+  const loggedIn = currentUser !== null && currentUser !== undefined;
   const isOwnBlog = loggedIn ? blog.user.username === currentUser : false;
   const [status, setStatus] = useState('closed');
   const icons = {
@@ -36,14 +36,14 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
       <>
         <button onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title}</button>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button onClick={like}>like</button></p>
+        <p>{blog.likes} like(s) - <button className='smashThatLikeButton' onClick={like}>like</button></p>
         <p>{blog.author}</p>
         { isOwnBlog && deleteButton() }
       </>
     );
   };
   const blogSummary = () => (
-    <button onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title} - {blog.author}</button>
+    <button className='openDetails' onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title} - {blog.author}</button>
   );
 
   return (

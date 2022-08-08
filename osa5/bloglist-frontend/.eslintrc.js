@@ -23,7 +23,8 @@ module.exports = {
     }
   },
   'plugins': [
-    'react'
+    'react',
+    'jest'
   ],
   'rules': {
     'indent': [
@@ -53,5 +54,15 @@ module.exports = {
     'no-console': 1,
     'react/prop-types': 0,
     'react/react-in-jsx-scope': 'off'
-  }
+  },
+  'overrides': [
+    {
+      'files': [
+        '**/*.test.js',
+      ],
+      'env': {
+        'jest': true
+      }
+    }
+  ]
 };
