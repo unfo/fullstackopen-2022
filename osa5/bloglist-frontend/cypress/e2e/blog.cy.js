@@ -66,7 +66,7 @@ describe('Blog app', function() {
             .contains(`${blog.title} - ${blog.author}`);
         });
     });
-    describe('When blogs exist', function() {
+    describe('When a blog exist', function() {
       beforeEach(function() {
         cy.createBlog(blog);
       });
@@ -102,6 +102,49 @@ describe('Blog app', function() {
           });
 
       });
+    });
+  });
+  describe('When multiple blogs exist', function() {
+    const blogs = [
+      { title: 'Fairly OK', author: 'Mancubus', url: 'pit.doom.eternal' },
+      { title: 'Simply the best', author: 'Tyrant', url: 'hell.doom.eternal' },
+      { title: 'Kind of meh', author: 'Cannonfodder', url: 'lounge.doom.eternal' }
+    ];
+
+    beforeEach(function() {
+      cy.login({ username: user.username, password: user.password });
+      for (let blog of blogs) {
+        cy.createBlog(blog);
+      }
+    });
+    it('they are sorted in order of likes', function() {
+      cy.contains(blogs[0].title).click()
+        .then(() => {
+          cy.contains(blogs[0].title)
+            .parent()
+            .find('button.smashThatLikeButton')
+            .click()
+            .then(() => {
+              cy.contains(blogs[0].title).click();
+            });
+        })
+        .then(() => {
+          cy.contains(blogs[1].title).click()
+            .then(() => {
+              cy.contains(blogs[1].title)
+                .parent()
+                .find('button.smashThatLikeButton')
+                .click()
+                .wait(500)
+                .click();
+            });
+        })
+        .then(() => {
+          cy.visit('http://localhost:3000');
+          cy.get('.blog').eq(0).should('contain', blogs[1].title);
+          cy.get('.blog').eq(1).should('contain', blogs[0].title);
+          cy.get('.blog').eq(2).should('contain', blogs[2].title);
+        });
     });
   });
 });
