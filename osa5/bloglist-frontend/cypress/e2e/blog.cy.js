@@ -49,7 +49,7 @@ describe('Blog app', function() {
       cy.login({ username: user.username, password: user.password });
     });
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('add blog')
         .click()
         .then(() => {
@@ -65,6 +65,28 @@ describe('Blog app', function() {
           cy.get('div.blog')
             .contains(`${blog.title} - ${blog.author}`);
         });
+    });
+    describe('When blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog(blog);
+      });
+
+      it.only('A blog can be liked', function() {
+        cy.get('div.blog:first').as('blog');
+        cy.get('@blog').get('button.openDetails').click()
+          .then(() => {
+            cy.get('@blog')
+              .get('button.smashThatLikeButton')
+              .click()
+              .wait(500)
+              .click()
+              .wait(500)
+              .click();
+          })
+          .then(() => {
+            cy.get('@blog').contains('3 like(s)');
+          });
+      });
     });
   });
 });
