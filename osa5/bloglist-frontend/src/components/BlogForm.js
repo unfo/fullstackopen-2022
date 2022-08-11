@@ -38,7 +38,7 @@ const BlogForm = ({ createBlog }) => {
           <FormRow paramName='url' paramValue={url} paramChanged={({ target }) => { setUrl(target.value); }} />
         </tbody>
       </table>
-      <input className='submitButton' type='submit' value='create' />
+      <input className='submitButton' id='create-blog' type='submit' value='create' />
     </form>
   );
 };
