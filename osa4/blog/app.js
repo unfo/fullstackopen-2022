@@ -31,6 +31,13 @@ app.use('/api/blogs', middleware.userExtractor, blogRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 
+// part5 cypress testing endpoint
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
+
+
 // Error handling
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

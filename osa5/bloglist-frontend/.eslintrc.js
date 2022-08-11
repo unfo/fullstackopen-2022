@@ -4,6 +4,8 @@ module.exports = {
     'es2021': true,
     'node': true,
     'es6': true,
+    'jest/globals': true,
+    'cypress/globals': true
   },
   'extends': [
     'eslint:recommended',
@@ -24,7 +26,8 @@ module.exports = {
   },
   'plugins': [
     'react',
-    'jest'
+    'jest',
+    'cypress'
   ],
   'rules': {
     'indent': [
