@@ -71,7 +71,7 @@ describe('Blog app', function() {
         cy.createBlog(blog);
       });
 
-      it.only('A blog can be liked', function() {
+      it('A blog can be liked', function() {
         cy.get('div.blog:first').as('blog');
         cy.get('@blog').get('button.openDetails').click()
           .then(() => {
@@ -86,6 +86,21 @@ describe('Blog app', function() {
           .then(() => {
             cy.get('@blog').contains('3 like(s)');
           });
+      });
+      it('A blog can be removed', function() {
+        cy.on('window:confirm', (str) => {
+          expect(str).to.match(/^Remove/);
+          return true;
+        });
+        cy.get('div.blog:first').as('blog');
+        cy.get('@blog').get('button.openDetails').click()
+          .then(() => {
+            cy.get('@blog').contains('delete blog').click();
+          })
+          .then(() => {
+            cy.get('.blog').should('have.length', 0);
+          });
+
       });
     });
   });
