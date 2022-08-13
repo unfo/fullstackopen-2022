@@ -9,12 +9,15 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
+// action creator
 export const voteFor = (id) => {
   return {
     type: 'VOTE',
     data: { id }
   };
 };
+
+// action creator
 export const newQuote = (quote) => {
   return {
     type: 'CREATE',
