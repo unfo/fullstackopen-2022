@@ -15,6 +15,12 @@ export const voteFor = (id) => {
     data: { id }
   };
 };
+export const newQuote = (quote) => {
+  return {
+    type: 'CREATE',
+    data: asObject(quote)
+  };
+};
 
 const asObject = (anecdote) => {
   return {
@@ -36,6 +42,10 @@ const reducer = (state = initialState, action) => {
       votes: item.votes + 1
     };
     return state.map(quote => quote.id === id ? changedItem : quote);
+  }
+  case 'CREATE': {
+    const quote = action.data;
+    return [...state, quote];
   }
   default:
     return state;
