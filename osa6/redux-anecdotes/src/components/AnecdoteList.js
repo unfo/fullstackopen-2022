@@ -4,7 +4,12 @@ import { addNotification, clearNotification } from '../reducers/notificationRedu
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector(state => state.anecdotes);
+  const filter = useSelector(state => state.filter);
+  const anecdotes = useSelector(state => {
+    return filter
+      ? state.anecdotes.filter(a => a.content.includes(filter))
+      : state.anecdotes;
+  });
 
   const vote = (id) => {
     const anecdote = anecdotes.find(a => a.id === id);
