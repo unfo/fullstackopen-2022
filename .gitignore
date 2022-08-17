@@ -105,4 +105,4 @@ dist
 .DS_Store
 .vscode/settings.json
 osa2/puhelinluettelo/db.json
-osa6/redux-anecdotes/db.json
+db.json
