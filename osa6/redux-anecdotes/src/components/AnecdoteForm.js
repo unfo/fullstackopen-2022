@@ -2,7 +2,6 @@
 import { useDispatch } from 'react-redux';
 import { newQuote } from '../reducers/anecdoteReducer';
 import { addNotification, clearNotification } from '../reducers/notificationReducer';
-import anecdotesService from '../services/anecdotes';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -12,9 +11,7 @@ const AnecdoteForm = () => {
     const quote = event.target.anecdote.value;
     if (quote.length > 1) {
       event.target.anecdote.value = '';
-      const newQ = await anecdotesService.createNew(quote);
-      console.log(newQ);
-      dispatch(newQuote(newQ));
+      dispatch(newQuote(quote));
       dispatch(addNotification(`New anecdote created: ${quote}`));
       setTimeout(() => {
         dispatch(clearNotification());

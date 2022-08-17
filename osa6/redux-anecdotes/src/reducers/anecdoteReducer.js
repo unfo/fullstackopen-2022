@@ -14,7 +14,7 @@ const anecdoteSlice = createSlice({
       };
       return state.map(quote => quote.id === id ? changedItem : quote);
     },
-    newQuote(state, { payload }) {
+    appendQuote(state, { payload }) {
       return [ ...state, payload ];
     },
     setAnecdotes(state, { payload }) {
@@ -24,7 +24,7 @@ const anecdoteSlice = createSlice({
   }
 });
 
-export const { voteFor, newQuote, setAnecdotes } = anecdoteSlice.actions;
+export const { voteFor, appendQuote, setAnecdotes } = anecdoteSlice.actions;
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
@@ -32,4 +32,12 @@ export const initializeAnecdotes = () => {
     dispatch(setAnecdotes(all));
   };
 };
+
+export const newQuote = quote => {
+  return async dispatch => {
+    const newQ = await anecdotesService.createNew(quote);
+    dispatch(appendQuote(newQ));
+  };
+};
+
 export default anecdoteSlice.reducer;
