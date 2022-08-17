@@ -1,21 +1,17 @@
 
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { newQuote } from '../reducers/anecdoteReducer';
-import { addNotification, clearNotification } from '../reducers/notificationReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch();
+const AnecdoteForm = (props) => {
   const createAnecdote = async (event) => {
     event.preventDefault();
 
     const quote = event.target.anecdote.value;
     if (quote.length > 1) {
       event.target.anecdote.value = '';
-      dispatch(newQuote(quote));
-      dispatch(addNotification(`New anecdote created: ${quote}`));
-      setTimeout(() => {
-        dispatch(clearNotification());
-      }, 5000);
+      props.newQuote(quote);
+      props.setNotification(`New anecdote created: ${quote}`, 5);
     }
   };
   return (
@@ -30,4 +26,13 @@ const AnecdoteForm = () => {
   );
 };
 
-export default AnecdoteForm;
+const mapStateToProps = null;
+const mapDispatchToProps = {
+  newQuote,
+  setNotification
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnecdoteForm);
