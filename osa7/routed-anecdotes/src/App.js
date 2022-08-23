@@ -4,7 +4,11 @@ import {
   Routes,
   Route,
   Link,
+  useMatch,
+  generatePath
 } from 'react-router-dom';
+
+const anecdotePath = '/anecdotes/:id';
 
 const Menu = () => {
   const padding = {
@@ -23,9 +27,21 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => (
+        <li key={anecdote.id} >
+          <Link to={generatePath(anecdotePath, { id: anecdote.id })}>{anecdote.content}</Link>
+        </li>
+      ))}
     </ul>
   </div>
+);
+
+const Anecdote = ({ anecdote }) => (
+  <>
+    <h2>{anecdote.content} by {anecdote.author}</h2>
+    <p>has {anecdote.votes} vote(s)</p>
+    <p>c.f. <a href={anecdote.info}>{anecdote.info}</a></p>
+  </>
 );
 
 const About = () => (
@@ -114,8 +130,12 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote));
   };
 
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id);
+  const anecdoteById = (id) => anecdotes.find(a => a.id === id);
+
+  const match = useMatch(anecdotePath);
+  const anecdote = match
+    ? anecdoteById(Number(match.params.id))
+    : null;
 
   // eslint-disable-next-line no-unused-vars
   const vote = (id) => {
@@ -134,6 +154,7 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Menu />
       <Routes>
+        <Route path={anecdotePath} element={<Anecdote anecdote={anecdote} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/about' element={<About />} />
         <Route path='/new' element={<CreateNew addNew={addNew} />} />
