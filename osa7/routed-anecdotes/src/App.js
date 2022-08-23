@@ -135,7 +135,7 @@ const App = () => {
   const navigate = useNavigate();
   const [notification, setNotification] = useState('');
   useEffect(() => {
-    if (notification !== '') {
+    if (notification) {
       setTimeout(() => {
         setNotification('');
       }, 5000);
