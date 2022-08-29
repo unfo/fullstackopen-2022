@@ -17,11 +17,21 @@ const useField = (type) => {
 
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
+  const [refresh, setRefresh] = useState(false);
 
-  // ...
+  useEffect(() => {
+    axios.get(baseUrl)
+      .then(response => {
+        setResources(response.data)
+      });
+      setRefresh(false);
+  }, [baseUrl, refresh]);
 
-  const create = (resource) => {
-    // ...
+
+  const create = async (resource) => {
+    const response = await axios.post(baseUrl, resource);
+    setRefresh(true);
+    return response.data;
   }
 
   const service = {
@@ -41,14 +51,14 @@ const App = () => {
   const [notes, noteService] = useResource('http://localhost:3005/notes')
   const [persons, personService] = useResource('http://localhost:3005/persons')
 
-  const handleNoteSubmit = (event) => {
+  const handleNoteSubmit = async (event) => {
     event.preventDefault()
-    noteService.create({ content: content.value })
+    await noteService.create({ content: content.value })
   }
  
-  const handlePersonSubmit = (event) => {
+  const handlePersonSubmit = async (event) => {
     event.preventDefault()
-    personService.create({ name: name.value, number: number.value})
+    await personService.create({ name: name.value, number: number.value})
   }
 
   return (
