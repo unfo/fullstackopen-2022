@@ -86,6 +86,8 @@ const CreateNew = (props) => {
     });
   };
 
+
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -103,6 +105,7 @@ const CreateNew = (props) => {
           <input { ...info } />
         </div>
         <button>create</button>
+        <button>reset</button>
       </form>
     </div>
   );
