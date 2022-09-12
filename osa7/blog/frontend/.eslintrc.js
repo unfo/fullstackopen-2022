@@ -1,71 +1,49 @@
 module.exports = {
-  'env': {
-    'browser': true,
-    'es2021': true,
-    'node': true,
-    'es6': true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    es6: true,
     'jest/globals': true,
-    'cypress/globals': true
+    'cypress/globals': true,
   },
-  'extends': [
+  extends: [
     'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:react/jsx-runtime'
+    'plugin:react/jsx-runtime',
   ],
-  'parserOptions': {
-    'ecmaFeatures': {
-      'jsx': true
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    'ecmaVersion': 'latest',
-    'sourceType': 'module',
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
-  'settings': {
-    'react': {
-      'version': 'detect',
-    }
+  settings: {
+    react: {
+      version: 'detect',
+    },
   },
-  'plugins': [
-    'react',
-    'jest',
-    'cypress'
-  ],
-  'rules': {
-    'indent': [
-      'error',
-      2
-    ],
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
-    'quotes': [
-      'error',
-      'single'
-    ],
-    'semi': [
-      'error',
-      'always'
-    ],
-    'eqeqeq': 'error',
+  plugins: ['react', 'jest', 'cypress'],
+  rules: {
+    indent: ['error', 2],
+    'linebreak-style': ['error', 'unix'],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
+    eqeqeq: 'error',
     'no-trailing-spaces': 'error',
-    'object-curly-spacing': [
-      'error', 'always'
-    ],
-    'arrow-spacing': [
-      'error', { 'before': true, 'after': true }
-    ],
+    'object-curly-spacing': ['error', 'always'],
+    'arrow-spacing': ['error', { before: true, after: true }],
     'no-console': 1,
     'react/prop-types': 0,
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
   },
-  'overrides': [
+  overrides: [
     {
-      'files': [
-        '**/*.test.js',
-      ],
-      'env': {
-        'jest': true
-      }
-    }
-  ]
+      files: ['**/*.test.js'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };

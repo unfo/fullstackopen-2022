@@ -30,18 +30,18 @@ const App = () => {
   // notification
   const emptyNotification = {
     message: null,
-    messageType: null
+    messageType: null,
   };
   const [notification, setNotification] = useState(emptyNotification);
 
   const showNotification = (message, type) => {
     const timeoutLengths = {
-      'success': 3000,
-      'fail': 5000
+      success: 3000,
+      fail: 5000,
     };
     setNotification({
       message: message,
-      messageType: type
+      messageType: type,
     });
     setTimeout(() => {
       setNotification(emptyNotification);
@@ -60,9 +60,7 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      );
+      blogService.getAll().then((blogs) => setBlogs(blogs));
     }
   }, [user]);
 
@@ -71,7 +69,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({ username, password, });
+      const user = await loginService.login({ username, password });
       window.localStorage.setItem('user', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
@@ -94,7 +92,10 @@ const App = () => {
   const addBlog = async (blog) => {
     const savedBlog = await blogService.create(blog);
     setBlogs(blogs.concat(savedBlog));
-    showNotification(`New blog added [${savedBlog.title}] by [${savedBlog.author}]`, 'success');
+    showNotification(
+      `New blog added [${savedBlog.title}] by [${savedBlog.author}]`,
+      'success'
+    );
     blogFormRef.current.toggleVisibility();
   };
 
@@ -119,30 +120,31 @@ const App = () => {
           type="text"
           name="username"
           value={username}
-          onChange={({ target }) => setUsername(target.value) }
+          onChange={({ target }) => setUsername(target.value)}
         />
-        <br/>
+        <br />
         <label htmlFor="password">Password:</label>
         <input
           id="password"
           type="password"
           name="password"
           value={password}
-          onChange={({ target }) => setPassword(target.value) }
+          onChange={({ target }) => setPassword(target.value)}
         />
-        <br/>
+        <br />
         <input type="submit" value="Login" />
       </form>
     );
   };
 
-
-
   if (user === null) {
     return (
       <>
         <h2>Login required</h2>
-        <Notification message={notification.message} messageType={notification.messageType} />
+        <Notification
+          message={notification.message}
+          messageType={notification.messageType}
+        />
         {loginForm()}
       </>
     );
@@ -150,21 +152,25 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <Notification message={notification.message} messageType={notification.messageType} />
+        <Notification
+          message={notification.message}
+          messageType={notification.messageType}
+        />
         <LoginDetails user={user} onLogout={handleLogout} />
-        <Togglable buttonLabel='add blog' ref={blogFormRef}>
+        <Togglable buttonLabel="add blog" ref={blogFormRef}>
           <BlogForm createBlog={addBlog} />
         </Togglable>
-        {
-          blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
               likeBlog={likeBlog}
               removeBlog={removeBlog}
-              currentUser={user ? user.username : null} />
-          )
-        }
+              currentUser={user ? user.username : null}
+            />
+          ))}
       </div>
     );
   }

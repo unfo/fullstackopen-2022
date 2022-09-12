@@ -12,14 +12,22 @@ describe('5.13: blogilistan testit, step1', () => {
   const removeBlog = jest.fn();
   const currentUser = null;
   const newBlog = {
-    title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+    title:
+      'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
     author: 'Robert Hobart Davis',
     url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
     likes: 42,
   };
 
   test('<Blog /> renders title and author by default', async () => {
-    render(<Blog blog={newBlog} likeBlog={likeBlog} removeBlog={removeBlog} currentUser={currentUser} />);
+    render(
+      <Blog
+        blog={newBlog}
+        likeBlog={likeBlog}
+        removeBlog={removeBlog}
+        currentUser={currentUser}
+      />
+    );
     const elem = screen.queryByText(`${newBlog.title} - ${newBlog.author}`);
     expect(elem).toBeDefined();
   });
@@ -44,13 +52,21 @@ describe('5.14: blogilistan testit, step2', () => {
   const removeBlog = jest.fn();
   const currentUser = null;
   const newBlog = {
-    title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+    title:
+      'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
     author: 'Robert Hobart Davis',
     url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
     likes: 42,
   };
   beforeEach(async () => {
-    let { container } = render(<Blog blog={newBlog} likeBlog={likeBlog} removeBlog={removeBlog} currentUser={currentUser} />);
+    let { container } = render(
+      <Blog
+        blog={newBlog}
+        likeBlog={likeBlog}
+        removeBlog={removeBlog}
+        currentUser={currentUser}
+      />
+    );
     let openDetailsButton = container.querySelector('button.openDetails');
     await userEvent.click(openDetailsButton);
   });
@@ -82,14 +98,22 @@ describe('5.15: blogilistan testit, step3', () => {
   const removeBlog = jest.fn();
   const currentUser = null;
   const newBlog = {
-    title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+    title:
+      'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
     author: 'Robert Hobart Davis',
     url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
     likes: 42,
   };
   let likeButton;
   beforeEach(async () => {
-    let { container } = render(<Blog blog={newBlog} likeBlog={likeBlog} removeBlog={removeBlog} currentUser={currentUser} />);
+    let { container } = render(
+      <Blog
+        blog={newBlog}
+        likeBlog={likeBlog}
+        removeBlog={removeBlog}
+        currentUser={currentUser}
+      />
+    );
     let openDetailsButton = container.querySelector('button.openDetails');
     await userEvent.click(openDetailsButton);
     likeButton = container.querySelector('button.smashThatLikeButton');

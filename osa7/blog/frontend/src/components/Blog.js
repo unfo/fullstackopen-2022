@@ -27,28 +27,44 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
     }
   };
 
-  const deleteButton = () => (
-    <button onClick={deleteBlog}>delete blog</button>
-  );
+  const deleteButton = () => <button onClick={deleteBlog}>delete blog</button>;
 
   const blogDetails = () => {
     return (
       <>
-        <button onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title}</button>
+        <button
+          onClick={(event) => {
+            openDetails(event);
+          }}
+        >
+          {icons[status]} {blog.title}
+        </button>
         <p>{blog.url}</p>
-        <p>{blog.likes} like(s) - <button className='smashThatLikeButton' onClick={like}>like</button></p>
+        <p>
+          {blog.likes} like(s) -{' '}
+          <button className="smashThatLikeButton" onClick={like}>
+            like
+          </button>
+        </p>
         <p>{blog.author}</p>
-        { isOwnBlog && deleteButton() }
+        {isOwnBlog && deleteButton()}
       </>
     );
   };
   const blogSummary = () => (
-    <button className='openDetails' onClick={(event) => { openDetails(event); }}>{icons[status]} {blog.title} - {blog.author}</button>
+    <button
+      className="openDetails"
+      onClick={(event) => {
+        openDetails(event);
+      }}
+    >
+      {icons[status]} {blog.title} - {blog.author}
+    </button>
   );
 
   return (
     <div className="blog">
-      {status === 'open' ? blogDetails() : blogSummary() }
+      {status === 'open' ? blogDetails() : blogSummary()}
     </div>
   );
 };

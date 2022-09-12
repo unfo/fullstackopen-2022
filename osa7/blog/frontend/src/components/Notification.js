@@ -14,7 +14,7 @@ const Notification = ({ message, messageType }) => {
 
 Notification.propTypes = {
   message: PropTypes.string,
-  messageType: PropTypes.oneOf(['success', 'fail'])
+  messageType: PropTypes.oneOf(['success', 'fail']),
 };
 
 export default Notification;

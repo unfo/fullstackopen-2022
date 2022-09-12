@@ -13,7 +13,8 @@ describe('5.16: blogilistan testit, step4', () => {
     const createBlog = jest.fn();
     const { container } = render(<BlogForm createBlog={createBlog} />);
     const newBlog = {
-      title: 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+      title:
+        'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
       author: 'Robert Hobart Davis',
       url: 'https://en.wikipedia.org/wiki/How_much_wood_would_a_woodchuck_chuck',
     };
