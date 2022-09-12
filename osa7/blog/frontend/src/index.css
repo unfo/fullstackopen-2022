@@ -1,0 +1,26 @@
+div, table, form {
+  margin: 10px 0 10px 0;
+}
+
+div.blog {
+  border: 1px solid black;
+}
+
+/* Notifications */
+output {
+  float: none;
+  margin: 20px;
+  padding: 10px;
+  border-width: 3px;
+  border-style: solid;
+}
+output.success {
+  border-color: green;
+  color: darkgreen;
+}
+
+output.fail {
+  border-color: red;
+  color: darkred;
+}
+

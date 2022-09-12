@@ -1,0 +1,33 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "blog app",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "start:test": "NODE_ENV=test node index.js",
+    "dev": "NODE_DEV=development nodemon index.js",
+    "test": "NODE_DEV=test jest --runInBand --forceExit",
+    "test:api": "NODE_DEV=test jest --verbose --runInBand --forceExit -- tests/blog_api.test.js",
+    "test:watch": "NODE_DEV=test jest --watchAll --verbose --runInBand --forceExit",
+    "lint": "eslint ."
+  },
+  "author": "jan wikholm",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4"
+  }
+}
