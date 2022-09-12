@@ -20,7 +20,9 @@ const tokenExtractor = (request, _, next) => {
 
 const userExtractor = async (request, response, next) => {
   if (request.token) {
-    const token = jwt.verify(request.token, process.env.SECRET, { algorithms: ['HS256'] });
+    const token = jwt.verify(request.token, process.env.SECRET, {
+      algorithms: ['HS256'],
+    });
     const user = await User.findById(token.id);
     if (!user) {
       return response.status(401).json({ error: 'invalid user id' });
@@ -43,14 +45,13 @@ const errorHandler = (error, _, response, next) => {
     return response.status(400).json({ error: error.message });
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({
-      error: 'invalid token'
+      error: 'invalid token',
     });
   } else if (error.name === 'TokenExpiredError') {
     return response.status(401).json({
-      error: 'token expired'
+      error: 'token expired',
     });
   }
-
 
   next(error);
 };
@@ -60,5 +61,5 @@ module.exports = {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
-  userExtractor
+  userExtractor,
 };

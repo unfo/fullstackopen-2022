@@ -7,8 +7,6 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-
-
 blogRouter.post('/', async (request, response) => {
   const user = request.user;
   if (!user) {
@@ -37,12 +35,12 @@ blogRouter.delete('/:id', async (request, response) => {
       logger.error(`[${blog.title}] not owned by ${user.username}`);
       logger.error(`[${blog.user.toString()}] !== [${user.id.toString()}]`);
       return response.status(401).json({
-        error: 'Permission denied. Can only delete own blog posts.'
+        error: 'Permission denied. Can only delete own blog posts.',
       });
     }
     await blog.remove();
     logger.info('Deleted blog from db');
-    user.blogs = user.blogs.filter(blog => blog.id !== request.params.id);
+    user.blogs = user.blogs.filter((blog) => blog.id !== request.params.id);
     await user.save();
     logger.info('Removed reference to blog from user');
   }
@@ -55,10 +53,10 @@ blogRouter.put('/:id', async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
   };
-
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+  const id = request.params.id;
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
   if (updatedBlog) {
     response.json(updatedBlog);
   } else {

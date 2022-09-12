@@ -2,7 +2,7 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 
 const getInitialBlogs = (user = '1') => {
-  return initialBlogs.map(blog => {
+  return initialBlogs.map((blog) => {
     return { ...blog, user };
   });
 };
@@ -49,7 +49,7 @@ const initialBlogs = [
     author: 'Johann Pachabel',
     url: 'https://en.wikipedia.org/wiki/Pachelbel%27s_Canon',
     likes: 12,
-  }
+  },
 ];
 
 const nonExistingId = async () => {
@@ -57,7 +57,7 @@ const nonExistingId = async () => {
     title: 'a title here',
     author: 'anonymous',
     url: 'localhost',
-    likes: 0
+    likes: 0,
   });
   await blog.save();
   await blog.remove();
@@ -67,14 +67,17 @@ const nonExistingId = async () => {
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
-  return blogs.map(blog => blog.toJSON());
+  return blogs.map((blog) => blog.toJSON());
 };
 
 const usersInDb = async () => {
   const users = await User.find({});
-  return users.map(user => user.toJSON());
+  return users.map((user) => user.toJSON());
 };
 
 module.exports = {
-  getInitialBlogs, nonExistingId, blogsInDb, usersInDb
+  getInitialBlogs,
+  nonExistingId,
+  blogsInDb,
+  usersInDb,
 };

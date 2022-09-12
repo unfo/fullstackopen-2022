@@ -7,16 +7,17 @@ const dummy = (blogs) => {
 
 const totalLikes = (blogs) => {
   return blogs
-    .map(blog => blog.likes)
+    .map((blog) => blog.likes)
     .reduce((total, current) => total + current, 0);
 };
 
 const favoriteBlog = (blogs) => {
   return blogs
-    .map(blog => {
-      return { 'title': blog.title, 'author': blog.author, 'likes': blog.likes };
-    }).sort((a, b) => {
-      return (b.likes - a.likes);
+    .map((blog) => {
+      return { title: blog.title, author: blog.author, likes: blog.likes };
+    })
+    .sort((a, b) => {
+      return b.likes - a.likes;
     })[0];
 };
 
@@ -42,7 +43,7 @@ const mostLikes = (blogs) => {
     .groupBy('author')
     .map((blogByAuthor, author) => ({
       author: author,
-      likes: _.sumBy(blogByAuthor, 'likes')
+      likes: _.sumBy(blogByAuthor, 'likes'),
     }))
     .sortBy('likes')
     .last();
@@ -53,5 +54,5 @@ module.exports = {
   totalLikes,
   favoriteBlog,
   mostBlogs,
-  mostLikes
+  mostLikes,
 };

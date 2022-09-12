@@ -32,7 +32,7 @@ describe('4.16*: blogilistan laajennus, step4', () => {
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
-    const usernames = usersAtEnd.map(u => u.username);
+    const usernames = usersAtEnd.map((u) => u.username);
     expect(usernames).toContain(newUser.username);
   });
   test('username must be unique', async () => {

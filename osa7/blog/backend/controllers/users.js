@@ -4,7 +4,11 @@ const User = require('../models/user');
 const logger = require('../utils/logger');
 
 usersRouter.get('/', async (_, response) => {
-  const users = await User.find({}).populate('blogs', { title: 1, author: 1, url: 1 });
+  const users = await User.find({}).populate('blogs', {
+    title: 1,
+    author: 1,
+    url: 1,
+  });
   response.json(users);
 });
 
@@ -17,7 +21,7 @@ usersRouter.post('/', async (request, response, next) => {
       name: 'ValidationError',
       param: 'username',
       message: 'username must be unique',
-      value: username
+      value: username,
     };
     // send to centralized middleware error handling
     return next(error);
