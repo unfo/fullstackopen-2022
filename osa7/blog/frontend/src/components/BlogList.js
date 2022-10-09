@@ -3,10 +3,10 @@ import { deleteBlog, voteFor } from '../reducers/blogReducer';
 import { setNotification, setWarning } from '../reducers/notificationReducer';
 import Blog from './Blog';
 
-const BlogList = ({ user }) => {
+const BlogList = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-
+  const user = useSelector((state) => state.user);
   const likeBlog = async (id) => {
     const blog = blogs.find((b) => b.id === id);
     dispatch(voteFor(id));
