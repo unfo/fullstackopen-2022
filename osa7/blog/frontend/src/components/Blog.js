@@ -15,9 +15,7 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
   };
   const like = (event) => {
     event.preventDefault();
-    const likedBlog = { ...blog };
-    likedBlog.likes += 1;
-    likeBlog(likedBlog);
+    likeBlog(blog.id);
   };
 
   const deleteBlog = (event) => {

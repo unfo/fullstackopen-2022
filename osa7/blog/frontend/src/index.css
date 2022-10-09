@@ -25,3 +25,11 @@ output.fail {
   border-color: red;
   color: darkred;
 }
+
+output.fail:before {
+  content: "⚠️";
+}
+
+output.success:before {
+  content: "🆗"
+}

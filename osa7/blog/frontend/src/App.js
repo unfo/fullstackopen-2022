@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
-import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
+import BlogList from './components/BlogList';
 import Togglable from './components/Togglable';
 import { setInfoMessage, setWarning } from './reducers/notificationReducer';
 import { Buffer } from 'buffer';
+import { initializeBlogs, newBlog } from './reducers/blogReducer';
 
 const LoginDetails = ({ user, onLogout }) => {
   return (
@@ -19,9 +20,6 @@ const LoginDetails = ({ user, onLogout }) => {
 };
 
 const App = () => {
-  // blogs
-  const [blogs, setBlogs] = useState([]);
-
   //BlogForm
   const blogFormRef = useRef();
 
@@ -30,20 +28,27 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  const dispatch = useDispatch();
+
   // effects
+  // check logged in user + expiry
+
+  const isTokenExpired = (token) => {
+    const expiry = JSON.parse(Buffer.from(token.split('.')[1], 'base64'));
+    return expiry.exp * 1000 < Date.now();
+  };
+  const clearLoginDetails = () => {
+    window.localStorage.removeItem('user');
+    blogService.setToken(null);
+    setUser(null);
+  };
   useEffect(() => {
     const localStorageUser = window.localStorage.getItem('user');
     if (localStorageUser) {
       const user = JSON.parse(localStorageUser);
       if (user) {
-        console.log(user.token);
-        const expiry = JSON.parse(
-          Buffer.from(user.token.split('.')[1], 'base64')
-        );
-        if (expiry.exp * 1000 < Date.now()) {
-          window.localStorage.removeItem('user');
-          blogService.setToken(null);
-          setUser(null);
+        if (isTokenExpired(user.token)) {
+          clearLoginDetails();
         } else {
           setUser(user);
           blogService.setToken(user.token);
@@ -54,11 +59,9 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then((blogs) => setBlogs(blogs));
+      dispatch(initializeBlogs());
     }
-  }, [user]);
-
-  const dispatch = useDispatch();
+  }, [user, dispatch]);
 
   // eventHandlers
 
@@ -79,33 +82,16 @@ const App = () => {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    window.localStorage.removeItem('user');
-    blogService.setToken(null);
-    setUser(null);
+    clearLoginDetails();
     dispatch(setInfoMessage('logout success'));
   };
 
   const addBlog = async (blog) => {
-    const savedBlog = await blogService.create(blog);
-    setBlogs(blogs.concat(savedBlog));
+    dispatch(newBlog(blog));
     dispatch(
-      setInfoMessage(
-        `New blog added [${savedBlog.title}] by [${savedBlog.author}]`
-      )
+      setInfoMessage(`New blog added [${blog.title}] by [${blog.author}]`)
     );
     blogFormRef.current.toggleVisibility();
-  };
-
-  const likeBlog = async (blog) => {
-    await blogService.update(blog.id, blog);
-    const updatedBloglist = await blogService.getAll();
-    setBlogs(updatedBloglist);
-  };
-
-  const removeBlog = async (id) => {
-    await blogService.remove(id);
-    const updatedBloglist = await blogService.getAll();
-    setBlogs(updatedBloglist);
   };
 
   const loginForm = () => {
@@ -151,17 +137,7 @@ const App = () => {
         <Togglable buttonLabel="add blog" ref={blogFormRef}>
           <BlogForm createBlog={addBlog} />
         </Togglable>
-        {blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              likeBlog={likeBlog}
-              removeBlog={removeBlog}
-              currentUser={user ? user.username : null}
-            />
-          ))}
+        <BlogList user={user} />
       </div>
     );
   }
