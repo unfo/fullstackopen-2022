@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
+import { setInfoMessage, setWarning } from './reducers/notificationReducer';
+import { Buffer } from 'buffer';
 
 const LoginDetails = ({ user, onLogout }) => {
   return (
@@ -27,34 +30,25 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  // notification
-  const emptyNotification = {
-    message: null,
-    messageType: null,
-  };
-  const [notification, setNotification] = useState(emptyNotification);
-
-  const showNotification = (message, type) => {
-    const timeoutLengths = {
-      success: 3000,
-      fail: 5000,
-    };
-    setNotification({
-      message: message,
-      messageType: type,
-    });
-    setTimeout(() => {
-      setNotification(emptyNotification);
-    }, timeoutLengths[type]);
-  };
-
   // effects
   useEffect(() => {
     const localStorageUser = window.localStorage.getItem('user');
     if (localStorageUser) {
       const user = JSON.parse(localStorageUser);
-      setUser(user);
-      blogService.setToken(user.token);
+      if (user) {
+        console.log(user.token);
+        const expiry = JSON.parse(
+          Buffer.from(user.token.split('.')[1], 'base64')
+        );
+        if (expiry.exp * 1000 < Date.now()) {
+          window.localStorage.removeItem('user');
+          blogService.setToken(null);
+          setUser(null);
+        } else {
+          setUser(user);
+          blogService.setToken(user.token);
+        }
+      }
     }
   }, []);
 
@@ -63,6 +57,8 @@ const App = () => {
       blogService.getAll().then((blogs) => setBlogs(blogs));
     }
   }, [user]);
+
+  const dispatch = useDispatch();
 
   // eventHandlers
 
@@ -75,9 +71,9 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
-      showNotification(`logged in as ${username}`, 'success');
+      dispatch(setInfoMessage(`logged in as ${username}`));
     } catch (exception) {
-      showNotification('wrong credentials', 'fail');
+      dispatch(setWarning('failed to login'));
     }
   };
 
@@ -86,15 +82,16 @@ const App = () => {
     window.localStorage.removeItem('user');
     blogService.setToken(null);
     setUser(null);
-    showNotification('logged out', 'success');
+    dispatch(setInfoMessage('logout success'));
   };
 
   const addBlog = async (blog) => {
     const savedBlog = await blogService.create(blog);
     setBlogs(blogs.concat(savedBlog));
-    showNotification(
-      `New blog added [${savedBlog.title}] by [${savedBlog.author}]`,
-      'success'
+    dispatch(
+      setInfoMessage(
+        `New blog added [${savedBlog.title}] by [${savedBlog.author}]`
+      )
     );
     blogFormRef.current.toggleVisibility();
   };
@@ -141,10 +138,7 @@ const App = () => {
     return (
       <>
         <h2>Login required</h2>
-        <Notification
-          message={notification.message}
-          messageType={notification.messageType}
-        />
+        <Notification />
         {loginForm()}
       </>
     );
@@ -152,10 +146,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <Notification
-          message={notification.message}
-          messageType={notification.messageType}
-        />
+        <Notification />
         <LoginDetails user={user} onLogout={handleLogout} />
         <Togglable buttonLabel="add blog" ref={blogFormRef}>
           <BlogForm createBlog={addBlog} />
