@@ -3,7 +3,6 @@ import { generatePath } from 'react-router-dom';
 
 const UserDetails = ({ user }) => {
   const blogPath = '/blogs/:id';
-  console.log('UserDetails', user);
   return (
     <>
       <h1>{user.name}</h1>

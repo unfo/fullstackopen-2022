@@ -18,14 +18,14 @@ const UserList = ({ userId }) => {
   }
   if (userId) {
     const selectedUser = users.find((u) => u.id === userId);
-    console.log(
-      'We have userId',
-      userId,
-      'in url. found user:',
-      selectedUser,
-      'from a total of ',
-      users.length
-    );
+    // console.log(
+    //   'We have userId',
+    //   userId,
+    //   'in url. found user:',
+    //   selectedUser,
+    //   'from a total of ',
+    //   users.length
+    // );
     return <UserDetails user={selectedUser} />;
   } else {
     return (

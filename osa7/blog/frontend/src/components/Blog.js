@@ -1,18 +1,9 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
   const loggedIn = currentUser !== null && currentUser !== undefined;
   const isOwnBlog = loggedIn ? blog.user.username === currentUser : false;
-  const [status, setStatus] = useState('closed');
-  const icons = {
-    closed: '▶️',
-    open: '🔽',
-  };
-  const openDetails = (event) => {
-    event.preventDefault();
-    setStatus(status === 'open' ? 'closed' : 'open');
-  };
+
   const like = (event) => {
     event.preventDefault();
     likeBlog(blog.id);
@@ -27,42 +18,22 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
 
   const deleteButton = () => <button onClick={deleteBlog}>delete blog</button>;
 
-  const blogDetails = () => {
-    return (
-      <>
-        <button
-          onClick={(event) => {
-            openDetails(event);
-          }}
-        >
-          {icons[status]} {blog.title}
-        </button>
-        <p>{blog.url}</p>
-        <p>
-          {blog.likes} like(s) -{' '}
-          <button className="smashThatLikeButton" onClick={like}>
-            like
-          </button>
-        </p>
-        <p>{blog.author}</p>
-        {isOwnBlog && deleteButton()}
-      </>
-    );
-  };
-  const blogSummary = () => (
-    <button
-      className="openDetails"
-      onClick={(event) => {
-        openDetails(event);
-      }}
-    >
-      {icons[status]} {blog.title} - {blog.author}
-    </button>
-  );
-
   return (
     <div className="blog">
-      {status === 'open' ? blogDetails() : blogSummary()}
+      <h1>
+        {blog.title} - {blog.author}
+      </h1>
+      <p>
+        <a href={blog.url}>{blog.url}</a>
+      </p>
+      <p>
+        {blog.likes} like(s) -{' '}
+        <button className="smashThatLikeButton" onClick={like}>
+          like
+        </button>
+      </p>
+      <p>added by {blog.user.name}</p>
+      {isOwnBlog && deleteButton()}
     </div>
   );
 };
