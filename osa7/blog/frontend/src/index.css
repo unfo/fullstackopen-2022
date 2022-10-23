@@ -1,12 +1,5 @@
-div,
-table,
-form {
-  margin: 10px 0 10px 0;
-}
 
-div.blog {
-  border: 1px solid black;
-}
+
 
 /* Notifications */
 output {
@@ -32,4 +25,18 @@ output.fail:before {
 
 output.success:before {
   content: "🆗"
+}
+
+a.logout-link {
+  padding-left: 1em;
+}
+
+.tt {
+  font-family: 'Consolas', 'Lucida Console', 'Courier New', Courier, monospace;
+}
+
+h1 {
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 0.5em;
 }

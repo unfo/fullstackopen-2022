@@ -47,6 +47,20 @@ blogRouter.delete('/:id', async (request, response) => {
   response.status(204).end();
 });
 
+blogRouter.post('/:id/comments', async (request, response) => {
+  const comment = request.body.comment;
+  const id = request.params.id;
+  const blog = await Blog.findById(id);
+  console.log(blog);
+  blog.comments.push(comment);
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+  if (updatedBlog) {
+    response.json(updatedBlog);
+  } else {
+    response.status(404).end();
+  }
+});
+
 blogRouter.put('/:id', async (request, response) => {
   const body = request.body;
   const blog = {

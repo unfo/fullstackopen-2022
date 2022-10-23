@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../reducers/blogReducer';
 
 const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
+  const dispatch = useDispatch();
   const loggedIn = currentUser !== null && currentUser !== undefined;
   const isOwnBlog = loggedIn ? blog.user.username === currentUser : false;
 
@@ -15,14 +19,20 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
       removeBlog(blog.id);
     }
   };
+  const commentOn = async (event) => {
+    event.preventDefault();
+    const comment = event.target.comment.value;
+    await dispatch(addComment(blog, comment));
+    event.target.comment.value = '';
+  };
 
   const deleteButton = () => <button onClick={deleteBlog}>delete blog</button>;
 
   return (
-    <div className="blog">
-      <h1>
+    <Container>
+      <h2>
         {blog.title} - {blog.author}
-      </h1>
+      </h2>
       <p>
         <a href={blog.url}>{blog.url}</a>
       </p>
@@ -34,7 +44,30 @@ const Blog = ({ blog, likeBlog, removeBlog, currentUser }) => {
       </p>
       <p>added by {blog.user.name}</p>
       {isOwnBlog && deleteButton()}
-    </div>
+      <h2>Comments</h2>
+      <Form onSubmit={commentOn}>
+        <Row>
+          <Col>
+            <Form.Control name="comment" placeholder="New comment ..." />
+          </Col>
+          <Col>
+            <Button variant="primary" type="submit">
+              add comment
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+      <br />
+      <Table striped>
+        <tbody>
+          {blog.comments.map((comment, index) => (
+            <tr key={index}>
+              <td>{comment}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Container>
   );
 };
 

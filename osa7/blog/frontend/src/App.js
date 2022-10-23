@@ -1,40 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import BlogForm from './components/BlogForm';
 import BlogList from './components/BlogList';
-import LoginDetails from './components/LoginDetails';
+import BlogForm from './components/BlogForm';
+
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
 import UserList from './components/UserList';
 import { initializeBlogs, newBlog } from './reducers/blogReducer';
-import { setInfoMessage } from './reducers/notificationReducer';
 import { restoreStoredLogin } from './reducers/userReducer';
-
 import {
   Routes,
   Route,
-  Link,
   useMatch,
+  useNavigate,
   // generatePath,
   // useNavigate,
 } from 'react-router-dom';
+import LoginForm from './components/LoginForm';
+import Navigation from './components/Navigation';
 
 const blogPath = '/blogs/:id';
 const userPath = '/users/:id';
 
-const Menu = () => {
-  return (
-    <>
-      <Link to="/">blogs</Link>
-      <Link to="/users">users</Link>
-      <LoginDetails />
-    </>
-  );
-};
-
 const App = () => {
+  let navigate = useNavigate();
+
   //BlogForm
-  const blogFormRef = useRef();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
@@ -58,32 +48,31 @@ const App = () => {
 
   const addBlog = async (blog) => {
     dispatch(newBlog(blog));
-    dispatch(
-      setInfoMessage(`New blog added [${blog.title}] by [${blog.author}]`)
-    );
-    blogFormRef.current.toggleVisibility();
+    navigate('/');
   };
 
   if (user === null) {
     return (
-      <>
+      <div className="container">
         <h2>Login required</h2>
         <Notification />
-        <LoginDetails />
-      </>
+        <LoginForm />
+      </div>
     );
   } else {
     return (
-      <div>
-        <Menu />
-        <h2>blogs</h2>
+      <div className="container">
+        <Navigation />
+        <h1>Ye Wonderful Bloggeth Engine</h1>
         <Notification />
-        <Togglable buttonLabel="add blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
+
         <Routes>
           <Route path={blogPath} element={<BlogList blogId={blogId} />} />
-          <Route path="/" element={<BlogList user={user} />} />
+          <Route path="/create" element={<BlogForm createBlog={addBlog} />} />
+          <Route
+            path="/"
+            element={<BlogList addBlog={addBlog} user={user} />}
+          />
           <Route path="/users" element={<UserList />} />
           <Route path={userPath} element={<UserList userId={matchedUser} />} />
         </Routes>

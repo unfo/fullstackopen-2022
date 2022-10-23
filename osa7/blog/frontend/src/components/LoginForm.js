@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { setInfoMessage, setWarning } from '../reducers/notificationReducer';
 import { attemptLogin } from '../reducers/userReducer';
@@ -10,7 +11,6 @@ const LoginForm = () => {
 
   const loginHandler = async (event) => {
     event.preventDefault();
-    console.log('dispatching login with', username, password);
     try {
       await dispatch(attemptLogin(username, password));
       dispatch(setInfoMessage(`logged in as ${username}`));
@@ -22,27 +22,32 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={loginHandler}>
-      <label htmlFor="username">Username:</label>
-      <input
-        id="username"
-        type="text"
-        name="username"
-        value={username}
-        onChange={({ target }) => setUsername(target.value)}
-      />
-      <br />
-      <label htmlFor="password">Password:</label>
-      <input
-        id="password"
-        type="password"
-        name="password"
-        value={password}
-        onChange={({ target }) => setPassword(target.value)}
-      />
-      <br />
-      <input type="submit" value="Login" />
-    </form>
+    <Form onSubmit={loginHandler}>
+      <Row>
+        <Col>
+          <Form.Control
+            id="username"
+            name="username"
+            value={username}
+            placeholder="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </Col>
+        <Col>
+          <Form.Control
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </Col>
+        <Col>
+          <Button type="submit">Login</Button>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

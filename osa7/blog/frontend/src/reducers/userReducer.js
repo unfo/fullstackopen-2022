@@ -36,10 +36,10 @@ export const restoreStoredLogin = () => {
     const token = user ? user.token : null;
     if (token) {
       if (isTokenExpired(token)) {
-        console.warn('Session expired, logging out');
+        // console.warn('Session expired, logging out');
         dispatch(logout());
       } else {
-        console.log('Session valid, resuming as', user.username);
+        // console.log('Session valid, resuming as', user.username);
         dispatch(setUser(user));
         blogService.setToken(token);
       }

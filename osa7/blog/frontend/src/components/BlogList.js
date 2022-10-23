@@ -1,3 +1,4 @@
+import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { generatePath } from 'react-router-dom';
@@ -36,18 +37,20 @@ const BlogList = ({ blogId }) => {
     );
   } else {
     return (
-      <ul>
-        {blogs &&
-          [...blogs] // sort would try to in-place order items. blogs is const.
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <li key={blog.id}>
-                <Link to={generatePath(blogPath, { id: blog.id })}>
-                  {blog.title} - {blog.author}
-                </Link>
-              </li>
-            ))}
-      </ul>
+      <Container>
+        <ul>
+          {blogs &&
+            [...blogs] // sort would try to in-place order items. blogs is const.
+              .sort((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <li key={blog.id}>
+                  <Link to={generatePath(blogPath, { id: blog.id })}>
+                    {blog.title} - {blog.author}
+                  </Link>
+                </li>
+              ))}
+        </ul>
+      </Container>
     );
   }
 };

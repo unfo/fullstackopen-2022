@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Form, Button, Table } from 'react-bootstrap';
 
 const FormRow = ({ paramName, paramValue, paramChanged }) => {
   return (
@@ -36,44 +37,39 @@ const BlogForm = ({ createBlog }) => {
     setUrl('');
   };
   return (
-    <form onSubmit={addBlog}>
-      <table>
-        <thead>
-          <tr>
-            <th colSpan="2">create new blog</th>
-          </tr>
-        </thead>
-        <tbody>
-          <FormRow
-            paramName="title"
-            paramValue={title}
-            paramChanged={({ target }) => {
-              setTitle(target.value);
-            }}
-          />
-          <FormRow
-            paramName="author"
-            paramValue={author}
-            paramChanged={({ target }) => {
-              setAuthor(target.value);
-            }}
-          />
-          <FormRow
-            paramName="url"
-            paramValue={url}
-            paramChanged={({ target }) => {
-              setUrl(target.value);
-            }}
-          />
-        </tbody>
-      </table>
-      <input
-        className="submitButton"
-        id="create-blog"
-        type="submit"
-        value="create"
-      />
-    </form>
+    <>
+      <h2>Add new blog</h2>
+      <Form onSubmit={addBlog}>
+        <Table striped bordered>
+          <tbody>
+            <FormRow
+              paramName="title"
+              paramValue={title}
+              paramChanged={({ target }) => {
+                setTitle(target.value);
+              }}
+            />
+            <FormRow
+              paramName="author"
+              paramValue={author}
+              paramChanged={({ target }) => {
+                setAuthor(target.value);
+              }}
+            />
+            <FormRow
+              paramName="url"
+              paramValue={url}
+              paramChanged={({ target }) => {
+                setUrl(target.value);
+              }}
+            />
+          </tbody>
+        </Table>
+        <Button className="submitButton" id="create-blog" type="submit">
+          Create
+        </Button>
+      </Form>
+    </>
   );
 };
 
