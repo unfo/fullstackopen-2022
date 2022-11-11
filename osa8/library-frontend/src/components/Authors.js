@@ -1,28 +1,35 @@
-const Authors = (props) => {
-  if (!props.show) {
+import { Table } from "react-bootstrap";
+
+const Authors = ({ show, authors }) => {
+  if (!show) {
     return null;
   }
-  const authors = [];
+
+  if (authors.loading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <div>
       <h2>authors</h2>
-      <table>
-        <tbody>
+      <Table striped>
+        <thead>
           <tr>
-            <th></th>
+            <th>name</th>
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map((a) => (
-            <tr key={a.name}>
+        </thead>
+        <tbody>
+          {authors.data.allAuthors.map((a) => (
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };
