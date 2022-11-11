@@ -1,20 +1,30 @@
+import { useMutation } from "@apollo/client";
 import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from "../queries";
 
-const NewBook = (props) => {
+const NewBook = ({ show, setError }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
-  if (!props.show) {
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: (error) => {
+      setError(error);
+    },
+  });
+
+  if (!show) {
     return null;
   }
-
   const submit = async (event) => {
     event.preventDefault();
-
-    console.log("add book...");
+    createBook({ variables: { title, published, author, genres } });
 
     setTitle("");
     setPublished("");
@@ -29,42 +39,48 @@ const NewBook = (props) => {
   };
 
   return (
-    <div>
-      <form onSubmit={submit}>
-        <div>
-          title
-          <input
+    <div className="container">
+      <h1>New book details</h1>
+      <Form onSubmit={submit}>
+        <InputGroup id="bookTitle">
+          <Form.Control
+            placholder="Title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          author
-          <input
+          <InputGroup.Text>Title</InputGroup.Text>
+        </InputGroup>
+        <InputGroup id="bookAuthor">
+          <Form.Control
+            placholder="Author"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
-          published
-          <input
-            type="number"
+          <InputGroup.Text>Author</InputGroup.Text>
+        </InputGroup>
+        <InputGroup id="bookPublished">
+          <Form.Control
+            placholder="Published"
             value={published}
-            onChange={({ target }) => setPublished(target.value)}
+            onChange={({ target }) => setPublished(parseInt(target.value))}
           />
-        </div>
-        <div>
-          <input
+          <InputGroup.Text>Published</InputGroup.Text>
+        </InputGroup>
+        <InputGroup id="bookGenre">
+          <Form.Control
+            placholder="Genre"
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">
+          <Button onClick={addGenre} type="button">
             add genre
-          </button>
+          </Button>
+        </InputGroup>
+        <div>
+          <h3>genres</h3> {genres.join(", ")}
         </div>
-        <div>genres: {genres.join(" ")}</div>
-        <button type="submit">create book</button>
-      </form>
+        <Button type="submit">create book</Button>
+      </Form>
     </div>
   );
 };
