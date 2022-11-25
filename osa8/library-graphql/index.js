@@ -1,5 +1,24 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { v1: uuid } = require("uuid");
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+
+const Author = require("./models/Author");
+const Book = require("./models/Book");
+
+require("dotenv").config();
+let JWT_SECRET = process.env.SECRET;
+let MONGODB_URI = process.env.MONGODB_URI;
+
+console.log("connecting to", MONGODB_URI);
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connection to MongoDB:", error.message);
+  });
 
 let authors = [
   {
@@ -103,9 +122,9 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
-    id: ID!
+    author: Author!
     genres: [String!]!
+    id: ID!
   }
   type Query {
     bookCount: Int!
@@ -119,7 +138,7 @@ const typeDefs = gql`
       author: String!
       published: Int!
       genres: [String!]!
-    ): Book
+    ): Book!
     editAuthor(name: String!, setBornTo: Int!): Author
   }
 `;
