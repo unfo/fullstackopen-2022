@@ -1,4 +1,5 @@
 import { Table } from "react-bootstrap";
+import AuthorAgeForm from "./AuthorAgeForm";
 
 const Authors = ({ show, authors }) => {
   if (!show) {
@@ -30,6 +31,7 @@ const Authors = ({ show, authors }) => {
           ))}
         </tbody>
       </Table>
+      <AuthorAgeForm authors={authors.data.allAuthors} />
     </div>
   );
 };
