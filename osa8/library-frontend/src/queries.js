@@ -34,6 +34,7 @@ export const ALL_BOOKS_BY_GENRE = gql`
         name
       }
       published
+      genres
     }
   }
 `;
