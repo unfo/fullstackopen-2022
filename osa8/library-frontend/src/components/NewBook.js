@@ -8,7 +8,7 @@ import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from "../queries";
 const NewBook = ({ show, setError, loggedIn }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [published, setPublished] = useState("");
+  const [publishedYear, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
@@ -24,6 +24,7 @@ const NewBook = ({ show, setError, loggedIn }) => {
   }
   const submit = async (event) => {
     event.preventDefault();
+    const published = parseInt(publishedYear);
     createBook({ variables: { title, published, author, genres } });
 
     setTitle("");
@@ -70,8 +71,8 @@ const NewBook = ({ show, setError, loggedIn }) => {
         <InputGroup id="bookPublished">
           <Form.Control
             placholder="Published"
-            value={published}
-            onChange={({ target }) => setPublished(parseInt(target.value))}
+            value={publishedYear}
+            onChange={({ target }) => setPublished(target.value)}
           />
           <InputGroup.Text>Published</InputGroup.Text>
         </InputGroup>
