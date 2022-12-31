@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from "../queries";
 
-const NewBook = ({ show, setError }) => {
+const NewBook = ({ show, setError, loggedIn }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
@@ -37,6 +37,15 @@ const NewBook = ({ show, setError }) => {
     setGenres(genres.concat(genre));
     setGenre("");
   };
+
+  if (!loggedIn) {
+    return (
+      <>
+        <h1>New book details</h1>
+        <div>You need to login to add data</div>
+      </>
+    );
+  }
 
   return (
     <div className="container">

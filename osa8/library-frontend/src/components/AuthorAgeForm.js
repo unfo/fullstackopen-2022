@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Form, InputGroup, Button } from "react-bootstrap";
 import { ALL_AUTHORS, EDIT_BORN_YEAR } from "../queries";
 
-const AuthorAgeForm = ({ authors }) => {
+const AuthorAgeForm = ({ authors, setErrorMessage, loggedIn }) => {
   const noAgeAuthors = authors.filter((a) => a.born === null);
 
   const [name, setName] = useState("");
@@ -12,6 +12,9 @@ const AuthorAgeForm = ({ authors }) => {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
       console.warn(error);
+      setErrorMessage(
+        `Adding author birth year failed due to the error: ${error.message}`
+      );
     },
   });
 
@@ -29,6 +32,15 @@ const AuthorAgeForm = ({ authors }) => {
     setBorn("");
     setName("");
   };
+
+  if (!loggedIn) {
+    return (
+      <>
+        <h2>Set birth year</h2>
+        <div>You need to login to add data</div>
+      </>
+    );
+  }
 
   return (
     <>

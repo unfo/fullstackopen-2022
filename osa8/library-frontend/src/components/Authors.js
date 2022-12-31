@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap";
 import AuthorAgeForm from "./AuthorAgeForm";
 
-const Authors = ({ show, authors }) => {
+const Authors = ({ show, authors, setErrorMessage, loggedIn }) => {
   if (!show) {
     return null;
   }
@@ -31,7 +31,12 @@ const Authors = ({ show, authors }) => {
           ))}
         </tbody>
       </Table>
-      <AuthorAgeForm authors={authors.data.allAuthors} />
+
+      <AuthorAgeForm
+        authors={authors.data.allAuthors}
+        loggedIn={loggedIn}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 };
