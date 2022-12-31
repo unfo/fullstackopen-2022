@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
+import { ALL_AUTHORS } from "./queries";
 import { useQuery, useApolloClient } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Notify from "./components/Notify";
+import Recommendations from "./components/Recommendations";
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -49,6 +50,9 @@ const App = () => {
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
+        <button onClick={() => setPage("recommendations")}>
+          recommendations
+        </button>
         <button onClick={() => setPage("add")}>add book</button>
         {login_button()}
       </div>
@@ -61,6 +65,10 @@ const App = () => {
       />
 
       <Books show={page === "books"} />
+      <Recommendations
+        show={page === "recommendations"}
+        loggedIn={token != null}
+      />
 
       <NewBook
         show={page === "add"}
