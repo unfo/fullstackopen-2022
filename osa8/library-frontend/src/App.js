@@ -16,7 +16,7 @@ const App = () => {
   // eslint-disable-next-line
   const [errorMessage, setErrorMessage] = useState(null);
   const authors = useQuery(ALL_AUTHORS);
-  const books = useQuery(ALL_BOOKS);
+
   const notify = (message) => {
     window.alert(`Error. See console for more details. "${message}"`);
     setErrorMessage(message);
@@ -60,7 +60,7 @@ const App = () => {
         setErrorMessage={notify}
       />
 
-      <Books show={page === "books"} books={books} />
+      <Books show={page === "books"} />
 
       <NewBook
         show={page === "add"}
